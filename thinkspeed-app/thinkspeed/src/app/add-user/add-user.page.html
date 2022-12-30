@@ -1,0 +1,191 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <img class="heading-img"
+        src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+      >
+      </ion-buttons>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="spacing"></div>
+
+    <div class="spacing"></div>
+      <form
+        name="add-user"
+        action="post"
+        [formGroup]="userDetails"
+        #form="ngForm"
+      >
+        <ion-grid>
+          <ion-row>
+            <ion-col size-md="7" size-sm="7" size-xs="12">
+              <ion-card>
+                <ion-card-header>
+                  <ion-toolbar class="form-toolbar">
+                    <ion-title
+                      >Portal User Details</ion-title
+                    >
+                  </ion-toolbar>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size-md="5" size-xs="12">
+                        <ion-list>
+                          <ion-item>
+                            <ion-label position="floating"
+                              >Account Name</ion-label
+                            >
+                            <ion-input
+                              formControlName="account_name"
+                              placeholder="Enter a Name"
+                            ></ion-input>
+                          </ion-item>
+
+                          <ion-item>
+                            <ion-label position="floating">E-mail</ion-label>
+                            <ion-input
+                              formControlName="e_mail"
+                              placeholder="Enter E-mail"
+                            ></ion-input>
+                          </ion-item>
+
+                          <ion-item>
+                            <ion-label>Role</ion-label>
+                            <ion-list>
+                              <ion-item class="ion-no-padding" lines="none">
+                                <ion-select
+                                  formControlName="user_role"
+                                  placeholder="Select Role"
+                                >
+                                  <ion-select-option
+                                    *ngFor="let role of userRoles"
+                                    value="{{role.role_id}}"
+                                    >{{role.role_name}}</ion-select-option
+                                  >
+                                </ion-select>
+                              </ion-item>
+                            </ion-list>
+                          </ion-item>
+                        </ion-list>
+                      </ion-col>
+                      <ion-col size-md="5" size-xs="12">
+                        <ion-list>
+                          <ion-item>
+                            <ion-label position="floating">Password</ion-label>
+                            <ion-input
+                              formControlName="password"
+                              placeholder="Enter Password"
+                            ></ion-input>
+                          </ion-item>
+
+                          <ion-item>
+                            <ion-label position="floating"
+                              >Verify Password</ion-label
+                            >
+                            <ion-input
+                              formControlName="verify_password"
+                              placeholder="Verify Password"
+                              [readonly]="false"
+                            ></ion-input>
+                          </ion-item>
+                          <ion-item>
+                            <ion-label>Organization</ion-label>
+                            <ion-list>
+                              <ion-item lines="none">
+                                <ion-select
+                                  formControlName="organization"
+                                  placeholder="Select Org"
+                                >
+                                  <ion-select-option
+                                    *ngFor="let org of organizations"
+                                    value="{{org.organization_id}}"
+                                    >{{org.organization_name}}</ion-select-option
+                                  >
+                                </ion-select>
+                              </ion-item>
+                            </ion-list>
+                          </ion-item>
+
+
+                          <ion-item lines="none">
+                            <ion-label class="danger" *ngIf="userDetails.errors"
+                              >Passwords do not match</ion-label
+                            >
+                          </ion-item>
+                        </ion-list>
+                      </ion-col>
+                    </ion-row>
+                    <ion-button
+                    [disabled]="!userDetails.valid"
+                    (click)="register()"
+                  >
+                    Complete Registration
+                  </ion-button>
+                    <ion-row>
+                      <ion-item  lines="none">
+
+                      </ion-item>
+                    </ion-row>
+                  </ion-grid>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size-md="5" size-xs="12"
+              ><ion-card>
+                <ion-card-header>
+                  <ion-toolbar class="form-toolbar">
+                    <ion-title
+                      >Summary</ion-title
+                    >
+                  </ion-toolbar>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-list>
+                    <ion-item>
+                      <ion-label
+                        >Name:
+                        {{userDetails.controls['account_name'].value}}</ion-label
+                      >
+                    </ion-item>
+                    <ion-item>
+                      <ion-label
+                        >E-mail:
+                        {{userDetails.controls['e_mail'].value}}</ion-label
+                      >
+                    </ion-item>
+                    <ion-item>
+                      <ion-label
+                        >Password:
+                        {{userDetails.controls['password'].value}}</ion-label
+                      >
+                    </ion-item>
+                    <ion-item>
+                      <ion-label
+                        >Role:
+                        {{userDetails.controls['user_role'].value}}</ion-label
+                      >
+                    </ion-item>
+                    <ion-item>
+                      <ion-label
+                        >Organization:
+                        {{userDetails.controls['organization'].value}}</ion-label
+                      >
+                    </ion-item>
+
+                  </ion-list>
+                  <ion-item>
+<img src="{{fetchISPimage(userDetails.controls['organization'].value)}}" alt="">                  </ion-item>
+                </ion-card-content>
+              </ion-card></ion-col
+            >
+          </ion-row>
+        </ion-grid>
+      </form>
+</ion-content>

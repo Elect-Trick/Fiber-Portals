@@ -1,0 +1,34 @@
+.custom-padding{
+  padding-top: 15%;
+  margin-left: 0;
+  padding-right: 0;
+}
+
+ion-grid{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+ion-card-header{
+  padding:0;
+}
+
+.logo{
+  margin-top: 15px;
+  transform: scale(0.8);
+
+}
+
+.button-area{
+  margin-top: 24px;
+}
+ion-button{
+  --background:#74c0fc;
+}
+.form-control{
+  border: 0 !important;
+}
+.error-labels{
+  margin-left: 26px;
+  color: red;
+}

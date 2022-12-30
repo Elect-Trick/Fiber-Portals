@@ -1,0 +1,54 @@
+.header-description{
+  font-size:18px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.location-list{
+  margin-left: 23px;
+  margin-right: 23px;
+}
+.location-item:hover{
+//border: 1px solid linear-gradient(270deg,#74C0FC, #e9ecef);
+--background: linear-gradient(270deg,#74C0FC, #e9ecef);
+
+cursor: pointer;
+}
+.location-item:active{
+--background: linear-gradient(360deg,#74C0FC, #e9ecef);
+
+}
+.main-card{
+  margin-top: 24px;
+}
+.location-content{
+  margin-top: 12px;
+}
+.search-fields{
+  margin-top: 12px;
+}
+.selected_location{
+  display: block;
+  align-content: space-around;
+}
+
+.selected-location-icon{
+  background: green;
+  border-radius: 50%;
+  width: 24px;
+  color: white;
+ // height: auto;
+}
+.product-list{
+  margin-top: 16px;
+}
+.accord-group{
+  margin-top: 16px;
+  padding-right: 24px;
+  padding-left: 24px;
+}
+ion-accordion-group{
+  // padding-right: 24px;
+  // padding-left: 24px;
+
+}

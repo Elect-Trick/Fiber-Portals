@@ -1,0 +1,32 @@
+.heading-img{
+    transform: scale(0.5);
+    margin-left: 50%;
+
+  }
+.table:hover{
+    border:2px solid red;
+    cursor: pointer;
+
+}
+.user-item{
+    margin-top:28px;
+
+}
+.user-item:hover{
+  border: 1px solid #74C0FC;
+  cursor: pointer;
+
+}
+
+.table-heading{
+  left: 0;
+}
+
+.sub-menu:hover{
+    border: 1px solid red;
+    cursor: pointer;
+
+}
+.form-toolbar{
+  padding: 0;
+}

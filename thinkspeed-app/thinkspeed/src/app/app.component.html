@@ -1,0 +1,47 @@
+<ion-app>
+  <ion-menu isOpen="isOpen" contentId="main-content" type="overlay">
+    <ion-content>
+      <ion-list-header>
+        <ion-img
+          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+        ></ion-img>
+      </ion-list-header>
+      <ion-accordion-group>
+        <ion-accordion *ngFor="let page of appPages">
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ page.icon }}"></ion-icon>
+            <ion-label>{{ page.title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                *ngFor="let item of page.subMenu"
+                routerDirection="root"
+                [routerLink]="[item.url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon slot="start" name="{{ item.icon }}"></ion-icon>
+                <ion-label>{{ item.title }}</ion-label>
+              </ion-item>
+
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+      <ion-menu-toggle>
+
+      <ion-item lines="none" class="menu-footer" (click)="logout()">
+        <ion-icon slot="start" name="exit"></ion-icon>
+        <ion-label>Logout</ion-label>
+      </ion-item>
+    </ion-menu-toggle>
+
+    </ion-content>
+
+  </ion-menu>
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-app>

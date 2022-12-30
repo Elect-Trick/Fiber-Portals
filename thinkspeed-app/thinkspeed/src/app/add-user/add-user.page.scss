@@ -1,0 +1,54 @@
+
+ion-item{
+    --highlight-color-focused: #5eaa94;
+
+
+}
+
+ion-card-header{
+    --ion-padding:0;
+    padding:0;
+}
+.form-toolbar{
+    padding:0;
+}
+.form-heading{
+    padding-left:38px;
+}
+ion-input{
+    text-align: end;
+}
+.ion-no-padding{
+   align-items:end;
+}
+.btn-primary:hover {
+
+  background-color:#74c0fc;
+}
+.btn-primary{
+  background-color:#74c0fc;
+}
+.btn-primary:disabled{
+  border:0;
+}
+.danger{
+  color: red;
+}
+
+.spacing{
+  padding: 10px;
+}
+.heading-img{
+  transform: scale(0.5);
+  margin-left: 50%;
+
+}
+.page-header{
+  --background: #e9ecef;
+  --ion-padding: 0;
+  left: 0;
+  right: 0;
+}
+
+
+

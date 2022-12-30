@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <img
+          class="heading-img"
+          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+        />
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-card>
+      <ion-card-header class="form-toolbar">
+        <ion-toolbar >
+          <ion-title
+            >Portal User Details</ion-title
+          >
+        </ion-toolbar>
+      </ion-card-header>
+      <ion-grid>
+        <ion-row>
+
+        </ion-row>
+        <ion-row>
+          <ion-col size="5" offset="3">
+            <ion-item lines="none">
+              <ion-searchbar
+                type="text"
+                (ionChange)="search($event)"
+                placeholder="Find E-mail"
+                (ionClear)="clearSearch($event)"
+                animated="true"
+                show-clear-button="focus"
+                value=""
+              ></ion-searchbar>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-card-content>
+        <ion-card>
+          <ion-card-header class="form-toolbar">
+            <ion-toolbar >
+              <ion-row>
+                <ion-col sizeMd="1"> </ion-col>
+                <ion-col sizeMd="3" sizeXs="12"> Account Name: </ion-col>
+                <ion-col sizeMd="3"> E-mail </ion-col>
+                <ion-col sizeMd="3"> Organization </ion-col>
+                <ion-col sizeMd="2"> Role </ion-col>
+              </ion-row></ion-toolbar
+            >
+          </ion-card-header>
+          <ion-card-content>
+
+            <ion-list>
+              <ion-popover
+                #popover
+                [isOpen]="isOpen"
+                (didDismiss)="isOpen = false"
+              >
+                <ng-template>
+                  <ion-content>
+                    <ion-label> {{selectedUser.account_name}} </ion-label>
+                    <ion-list>
+                      <ion-item
+                        (click)="deleteUser(selectedUser)"
+                        class="sub-menu"
+                      >
+                        <ion-icon slot="start" name="trash"></ion-icon>
+                        <ion-label>Delete User</ion-label>
+                      </ion-item>
+                      <ion-item
+                        [disabled]="true"
+                        (click)="presentEditModal()"
+                        class="sub-menu"
+                      >
+                        <ion-icon slot="start" name="pencil"></ion-icon>
+                        <ion-label>Edit User</ion-label>
+                      </ion-item>
+                    </ion-list>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-list>
+
+            <ion-row
+              (click)="presentPopover($event,user)"
+              class="user-item"
+              *ngFor="let user of users"
+            >
+          
+              <ion-col sizeXs="12" sizeMd="1">
+                <ion-item lines="none">
+                  <ion-icon slot="start" name="person-circle"></ion-icon>
+                </ion-item>
+              </ion-col>
+              <ion-col sizeXs="12" sizeMd="3">
+                <ion-item lines="none">
+                  <ion-label>{{user.account_name}}</ion-label>
+                </ion-item>
+              </ion-col>
+              <ion-col sizeXs="12" sizeMd="3">
+                <ion-item lines="none">
+                  <ion-label>{{user.email}}</ion-label>
+                </ion-item>
+              </ion-col>
+              <ion-col sizeXs="12" sizeMd="3">
+                <ion-item lines="none">
+                  <ion-label
+                    >{{fetchOrganizationNames(user.organization)}}</ion-label
+                  >
+                </ion-item>
+              </ion-col>
+              <ion-col sizeXs="12" sizeMd="2">
+                <ion-item lines="none">
+                  <ion-label>{{fetchRoleNames(user.role)}}</ion-label>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-card-content>
+    </ion-card>
+  </ion-grid>
+</ion-content>

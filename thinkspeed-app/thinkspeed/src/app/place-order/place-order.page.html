@@ -1,0 +1,274 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <img
+          class="heading-img"
+          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+        />
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-accordion-group class="accord-group" #accordionGroup>
+      <ion-accordion value="first">
+        <ion-item slot="header" color="light">
+          <ion-label>1.Find Location</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-card class="main-card">
+            <ion-card-header class="form-toolbar">
+              <ion-toolbar>
+                <ion-title class="header-description">
+                  Search for an installation location
+                </ion-title>
+              </ion-toolbar>
+            </ion-card-header>
+            <ion-card-content class="location-content">
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-item lines="none">
+                      <ion-segment
+                        [(ngModel)]="type"
+                        (ionChange)="activateSegment($event)"
+                        value="default"
+                      >
+                        <ion-segment-button value="sdu">
+                          <ion-label>SDU Search</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button value="mdu">
+                          <ion-label>MDU / Estate Search</ion-label>
+                        </ion-segment-button>
+                      </ion-segment>
+                    </ion-item>
+                    <div class="search-fields">
+                      <ion-item lines="none" *ngIf="type==='mdu'">
+                        <ion-searchbar
+                          #searcher
+                          [debounce]="500"
+                          type="text"
+                          placeholder="eg. 36, Polo Fields"
+                          (ionChange)="search($event)"
+                          (ionClear)="clearSearch($event)"
+                          animated="true"
+                          show-clear-button="focus"
+                          [value]="searchData.searchString"
+                        ></ion-searchbar>
+                      </ion-item>
+                      <ion-item lines="none" *ngIf="type==='sdu'">
+                        <ion-searchbar
+                          #searcher
+                          [debounce]="500"
+                          type="text"
+                          placeholder="eg. 7, Edwards street"
+                          (ionChange)="search($event)"
+                          (ionClear)="clearSearch($event)"
+                          animated="true"
+                          show-clear-button="focus"
+
+                          [value]="searchData.searchString"
+                        ></ion-searchbar>
+                      </ion-item>
+                    </div>
+                  </ion-col>
+                </ion-row>
+
+                <ion-row *ngIf="found">
+                  <ion-col size="12">
+                    <ion-card *ngIf="found" class="location-list">
+                      <ion-card-content>
+                        <ion-list>
+                          <ion-item
+                            class="location-item"
+                            (click)="confirmLocation(location)"
+                            *ngFor="let location of locations"
+                          >
+                            <ion-icon slot="start" name="location"></ion-icon>
+                            <ion-label>{{location.location_string}}</ion-label>
+                          </ion-item>
+                        </ion-list>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item *ngIf="isSelected" lines="none">
+                      <ion-label
+                        >{{selectedLocation.location_string}}</ion-label
+                      >
+                      <ion-icon
+                        class="selected-location-icon"
+                        name="checkmark-done-outline"
+                        >i</ion-icon
+                      >
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ion-accordion>
+      <form
+      name="add-user"
+        action="post"
+        #form="ngForm"
+        [formGroup]="newOrder"
+      >
+      <ion-accordion disabled="{{!isSelected}}" value="second">
+        <ion-item slot="header" color="light">
+          <ion-label>2.Complete Order</ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+          <ion-card>
+            <ion-card-header class="form-toolbar">
+              <ion-toolbar>
+                <ion-title
+                  >Client Details -
+                  {{selectedLocation.location_string}}</ion-title
+                >
+              </ion-toolbar>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">Name</ion-label>
+                      <ion-input
+                        formControlName="client_name"
+                        type="text"
+                        placeholder="eg. John"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">Surname</ion-label>
+                      <ion-input
+                        formControlName="client_surname"
+                        type="text"
+                        placeholder="eg. Doe"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">Email</ion-label>
+                      <ion-input
+                        formControlName="email"
+                        type="text"
+                        placeholder="eg. john@gmail.com"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">Confirm Email</ion-label>
+                      <ion-input
+                        formControlName="confirm_email"
+                        type="text"
+                        placeholder="eg. john@gmail.com"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">Contact Number</ion-label>
+                      <ion-input
+                        formControlName="contact_number"
+                        type="text"
+                        placeholder="eg.078 447 5902"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">ID / Passport </ion-label>
+                      <ion-input
+                        formControlName="id_number"
+                        type="text"
+                        placeholder="eg. 93122224406085"
+                      ></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label *ngIf="newOrder.errors">*Emails do not match</ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card *ngIf="isSelected">
+            <ion-card-header class="form-toolbar">
+              <ion-toolbar>
+                <ion-title>Product Details</ion-title>
+              </ion-toolbar>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item class="product-list">
+                      <ion-label>Product</ion-label>
+                      <ion-select
+
+                        multiple="false"
+                        placeholder="Select Product"
+                        formControlName="product"
+                      >
+                        <ion-select-option *ngFor="let product of products" value="{{product.product_id}}"
+                          >{{product.product_name}}</ion-select-option
+                        >
+
+                      </ion-select>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-label position="floating">ISP Reference</ion-label>
+                      <ion-input formControlName="isp_reference" type="text"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6">
+                    <ion-item>
+                      <ion-select formControlName="order_type"  multiple="false" placeholder="Order Type">
+                        <ion-select-option value="1">New Install</ion-select-option>
+                        <ion-select-option value="2">Migration</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-button [disabled]="!newOrder.valid" (click)="placeOrder()" expand="full" fill="clear" shape="square">
+                      Submit Order
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ion-accordion>
+    </form>
+
+    </ion-accordion-group>
+
+</ion-content>
