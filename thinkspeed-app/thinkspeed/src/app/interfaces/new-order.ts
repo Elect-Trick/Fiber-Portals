@@ -9,4 +9,5 @@ export interface NewOrder {
   order_type:string;
   location_type:string;
   location_id:number;
+  network_id:string;
 }

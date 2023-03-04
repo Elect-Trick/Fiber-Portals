@@ -1,19 +1,25 @@
-.heading-img{
-    transform: scale(0.5);
-    margin-left: 50%;
-
-  }
-  .sub-menu:hover{
-    border: 1px solid red;
-    cursor: pointer;
-
+.heading-img {
+  transform: scale(0.5);
 }
-.user-item{
-  margin-top:28px;
-
+.sub-menu:hover {
+  border: 1px solid red;
+  cursor: pointer;
 }
-.user-item:hover{
-border: 1px solid #74C0FC;
-cursor: pointer;
+.user-item {
+  margin-top: 28px;
+}
+.user-item:hover {
+  border: 1px solid #74c0fc;
+  cursor: pointer;
+}
 
+.footer {
+  font-size: 6px;
+  color: #74c0fc;
+}
+ion-footer {
+  color: #74c0fc;
+}
+.reject-order-btn {
+  color: white;
 }

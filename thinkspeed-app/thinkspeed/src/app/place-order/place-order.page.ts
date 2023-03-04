@@ -59,73 +59,89 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
     this.prepareForm();
   }
   ngOnDestroy(): void {
+    this.searchData = {
+      type: '',
+      searchString: '',
+    };
+    this.products =[];
     if (this.locationSub) {
       this.locationSub.unsubscribe();
     }
     if (this.productSub) {
       this.productSub.unsubscribe();
     }
-    if (this.toastCtrl) {
-      this.toastCtrl.dismiss();
-    }
+
     if (this.orderSub) {
       this.orderSub.unsubscribe();
     }
   }
 
   ngOnInit() {
-    this.openAccordion();
-    this.productSub = this.orderService.fetchProducts().subscribe({
-      next: (data) => {
-        this.products = data;
-      },
-      error: (error: HttpResponse) => {},
+    this.presentLoader().then(()=>{
+      this.openAccordion();
+      this.productSub = this.orderService.fetchProducts().subscribe({
+        next: (data) => {
+          this.products = data;
+        },
+        error: (error: HttpResponse) => {},
+      });
+      this.loadingCtrl.dismiss();
+
+
     });
+
   }
   placeOrder() {
     if (this.newOrder.valid) {
-      this.order = this.newOrder.value;
-      this.order.location_type = this.type;
-      this.order.location_id = parseInt(this.selectedLocation.location_id);
-      this.orderSub = this.orderService.placeOrder(this.order).subscribe({
-        next: (data: any) => {
-          if (!data) {
-            this.presentToast('Your token has expired, please log back in');
-            this.newOrder.reset();
-            this.router.navigateByUrl('');
-          }
-        },
-        error: (error: any) => {
-          switch (error.status) {
-            case 200:
-              this.order_number = error.error.text;
-              this.presentToast(
-                '<h1>Success</h1> ' +
-                  '<h2>' +
-                  error.error.text +
-                  '<h2/>' +
-                  ' is your Order number'
-              );
+      this.presentLoader().then(()=>{
+        this.order = this.newOrder.value;
+        this.order.location_type = this.type;
+        this.order.location_id = parseInt(this.selectedLocation.location_id);
+        this.orderSub = this.orderService.placeOrder(this.order).subscribe({
+          next: (data: any) => {
+            this.loadingCtrl.dismiss();
+            if (!data) {
+              this.presentToast('Your token has expired, please log back in');
+              this.newOrder.reset();
+              this.router.navigateByUrl('');
+            }
+          },
+          error: (error: any) => {
+            this.loadingCtrl.dismiss();
+            switch (error.status) {
+              case 200:
+                this.order_number = error.error.text;
+                this.presentToast(
+                  '<h1>Success</h1> ' +
+                    '<h2>' +
+                    error.error.text +
+                    '<h2/>' +
+                    ' is your Order number'
+                );
 
-              break;
-            case 400:
-              this.presentToast(
-                '<h1>Existing Order</h1> ' +
-                  '<h2>' +
-                  error.error +
-                  '<h2/>' +
-                  ' exists at location'
-              );
+                break;
+              case 400:
+                this.order_number = error.error;
+                this.presentToast(
+                  '<h1>Existing Order</h1> ' +
+                    '<h2>' +
+                    error.error +
+                    '<h2/>' +
+                    ' exists at location'
+                );
 
-              break;
+                break;
 
-            case 408:
-              this.presentToast('Something went wrong, contact support');
-              break;
-          }
-          this.reset();
-        },
+              case 408:
+                this.presentToast('Something went wrong, contact support');
+                break;
+            }
+            this.reset();
+          },
+        });
+
       });
+
     }
   }
   reset() {
@@ -167,6 +183,7 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
         product: new FormControl('', [Validators.required]),
         isp_reference: new FormControl('', [Validators.required]),
         order_type: new FormControl('', [Validators.required]),
+        network_id: new FormControl('', []),
       },
       EmailValidator.emailMatchingValidatior
     );
@@ -174,7 +191,7 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
   }
   async presentLoader() {
     const loader = await this.loadingCtrl.create({
-      message: 'Running some checks, hang tight...',
+      message: 'Busy...',
     });
     return await loader.present();
   }
@@ -283,13 +300,4 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
     return this.found ? true : false;
   }
 }
-enum OrderStatus {
-  'Pending' = 1,
-  'Awaiting Activation' = 2,
-  'Cancelled' = 3,
-  'Active' = 4,
-}
-enum OrderType {
-  'Migration' = 2,
-  'Install' = 1,
-}
+

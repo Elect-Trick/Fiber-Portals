@@ -1,0 +1,520 @@
+import { Comment } from './../interfaces/comment';
+import { Subscription } from 'rxjs';
+import { OrdersService } from './../services/orders.service';
+import { ManageFaultsService } from './../services/manage-faults.service';
+import {
+  IonAccordionGroup,
+  LoadingController,
+  ToastController,
+} from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Ticket } from '../interfaces/ticket';
+import { ENUMS } from '../Helpers/globalEnums';
+import { Location } from '../interfaces/location';
+import { HttpErrorResponse } from '@angular/common/http';
+import { User } from '../interfaces/user';
+import { Outage } from '../interfaces/outage';
+
+@Component({
+  selector: 'app-manage-tickets',
+  templateUrl: './manage-tickets.page.html',
+  styleUrls: ['./manage-tickets.page.scss'],
+})
+export class ManageTicketsPage implements OnInit {
+  type = 'open';
+  @ViewChild('accordionGroup', { static: true })
+  accordionGroup!: IonAccordionGroup;
+  ticket = '';
+  tickets: Ticket[] = [];
+  closedTickets: Ticket[] = [];
+  selectedTicket: Ticket = {
+    ticket_id: 0,
+    ticket_reference: '',
+    ticket_status: 0,
+    location_id: 0,
+    location_type: '',
+    service_id: 0,
+    fault_id: 0,
+    fault_description: '',
+    comments: '',
+    client_name: '',
+    client_surname: '',
+    client_contact_number: '',
+    client_email: '',
+    creation_date: '',
+    network_id: '',
+    alternative_contact_name: '',
+    alternative_number: '',
+    last_updated: '',
+    organization_id: 0,
+    technician: '',
+  };
+  isFiltered = false;
+
+  comment: Comment = {
+    comment_id: 0,
+    ticket_id: 0,
+    service_id: 0,
+    replier_email: '',
+    comment: '',
+    location_id: 0,
+    location_type: '',
+    reply_date: '',
+  };
+  comments: Comment[] = [];
+  selectedTech: User = {
+    user_id: 0,
+    account_name: '',
+    email: '',
+    organization: 0,
+    role: 0,
+    token: '',
+  };
+  location_string = '';
+  activePage = 1;
+  totalEntries: any;
+  closedTotalEntries = 0;
+  items_per_page = 6;
+  paginationArray: number[] = [];
+  closedPaginationArray: number[] = [];
+  location: Location = {
+    location_id: '',
+    location_string: '',
+  };
+  isResolved = false;
+  locationSub!: Subscription;
+  technicians: User[] = [];
+  tech = '';
+  assigned = false;
+  commentSub!: Subscription;
+  tempStorage: Ticket[] = [];
+  closedTempStorage: Ticket[] = [];
+  constructor(
+    private ticketService: ManageFaultsService,
+    private loadingCtrl: LoadingController,
+    private orderService: OrdersService,
+    private toastCtrl: ToastController
+  ) {}
+
+  ngOnInit() {
+    this.presentLoader()
+      .then(() => {
+        this.openAccordion();
+        this.countTickets();
+        this.countClosedTickets();
+        this.paginatedTickets('root', 1);
+        this.fetchAllTickets();
+        // this.fetchClosedTickets();
+        this.fetchTechnicians();
+      })
+      .finally(() => {
+        this.loadingCtrl.dismiss();
+      });
+  }
+  async markAsResolved() {
+    this.isResolved = true;
+  }
+
+  logDispute() {
+    this.comment.ticket_id = this.selectedTicket.ticket_id;
+    this.comment.service_id = this.selectedTicket.service_id;
+    this.comment.location_id = this.selectedTicket.location_id;
+    this.comment.location_type = this.selectedTicket.location_type;
+    let token = localStorage.getItem('token');
+    if (token) {
+      let userItem = JSON.parse(atob(token.split('.')[1]));
+      this.comment.replier_email = userItem.username;
+    }
+    this.presentLoader().then(() => {
+      this.commentSub = this.ticketService.postComment(this.comment).subscribe({
+        next: (response) => {
+          if (response) {
+            this.resolved(this.selectedTicket).then(() => {
+              // this.fetchComments(this.selectedTicket);
+              // this.countTickets();
+            });
+          } else {
+            console.log('Failed to post comment');
+          }
+        },
+      });
+      this.loadingCtrl.dismiss();
+    });
+  }
+  async resolved(ticket: Ticket) {
+    this.ticketService.markasResolved(ticket).subscribe({
+      next: (response) => {
+        if (response) {
+          this.presentFilterToast(
+            'Ticket marked as resolved, waiting for isp to confirm'
+          );
+          this.toggleAccordion().then(() => {
+            this.paginationArray = [];
+            this.countTickets();
+            this.paginatedTickets('root', 1);
+            this.clearData();
+          });
+        } else {
+        }
+      },
+    });
+  }
+
+  async fetchComments(ticket: Ticket) {
+    this.ticketService.fetchComments(ticket).subscribe({
+      next: (response) => {
+        if (response) {
+          this.comments = response;
+        } else {
+        }
+      },
+    });
+  }
+  async openAccordion() {
+    const nativeEl = this.accordionGroup;
+    nativeEl.value = 'ticket-list';
+  }
+  async toggleAccordion() {
+    const nativeEl = this.accordionGroup;
+    switch (nativeEl.value) {
+      case 'ticket-list':
+        nativeEl.value = 'ticket-info';
+        break;
+
+      default:
+        nativeEl.value = 'ticket-list';
+        break;
+    }
+  }
+
+  segmentChanged(event: any) {
+    this.type = event.detail.value;
+    if (this.type == 'closed') {
+      this.PaginatedClosedTickets('root', 1);
+      this.fetchClosedTickets();
+    } else {
+      this.paginatedTickets('root', 1);
+    }
+  }
+  async presentLoader() {
+    const loader = await this.loadingCtrl.create({
+      message: 'Busy....',
+    });
+    return await loader.present();
+  }
+
+  selectTicket(ticket: Ticket) {
+    this.presentLoader().then(() => {
+      this.selectedTicket = ticket;
+      this.prepareLocationObject();
+      this.fetchComments(this.selectedTicket);
+      this.assigned = this.selectedTicket.technician === '' ? false : true;
+      console.log(this.assigned);
+      this.toggleAccordion().then(() => {
+        this.loadingCtrl.dismiss();
+      });
+    });
+  }
+  selectTech(event: any) {
+    console.log(event.detail.value);
+    this.selectedTech.role = event.detail.value;
+  }
+
+  async countTickets() {
+    this.ticketService.countTickets().subscribe({
+      next: (response) => {
+        if (response) {
+          this.totalEntries = response;
+          let rowCount = Math.ceil(this.totalEntries / this.items_per_page);
+          // let display_row_count = Math.ceil(
+          //   this.totalEntries  / this.items_per_page
+          // );
+
+          for (let index = 1; index <= rowCount; index++) {
+            this.paginationArray.push(index);
+          }
+        }
+      },
+    });
+  }
+  async countClosedTickets() {
+    this.ticketService.countClosedTickets().subscribe({
+      next: (response) => {
+        if (response) {
+          this.closedTotalEntries = response;
+          let rowCount = Math.ceil(
+            this.closedTotalEntries / this.items_per_page
+          );
+          // let display_row_count = Math.ceil(
+          //   this.totalEntries  / this.items_per_page
+          // );
+
+          for (let index = 1; index <= rowCount; index++) {
+            this.closedPaginationArray.push(index);
+          }
+        }
+      },
+    });
+  }
+
+  async paginatedTickets(direction: string, page: number) {
+    this.tech = '';
+    this.isFiltered = false;
+    this.presentLoader().then(() => {
+      switch (direction) {
+        case 'root':
+          this.activePage = page;
+
+          this.ticketService.getPaginatedTickets(page).subscribe({
+            next: (response) => {
+              if (response) {
+                this.tickets = response;
+              }
+            },
+          });
+          this.loadingCtrl.dismiss();
+
+          break;
+      }
+    });
+  }
+  async PaginatedClosedTickets(direction: string, page: number) {
+    this.tech = '';
+    this.isFiltered = false;
+
+    this.presentLoader().then(() => {
+      switch (direction) {
+        case 'root':
+          this.ticketService.PaginatedClosedTickets(page).subscribe({
+            next: (response) => {
+              if (response) {
+                this.closedTickets = response;
+              }
+            },
+          });
+
+          break;
+      }
+      this.loadingCtrl.dismiss();
+    });
+  }
+
+  fetchFaultDescriptor(faultID: number) {
+    return ENUMS.GlobalEnums.fetchFaultNames(faultID);
+  }
+  fetchISPImages(orgnanizationID: number) {
+    return ENUMS.GlobalEnums.fetchISPImages(orgnanizationID);
+  }
+  fetchTicketStatus(statusID: number) {
+    return ENUMS.GlobalEnums.fetchTicketStatus(statusID);
+  }
+  fetchFaultNames(faultID: number) {
+    return ENUMS.GlobalEnums.fetchFaultNames(faultID);
+  }
+  backToTickets() {
+    this.presentLoader()
+      .then(() => {
+        this.toggleAccordion();
+        this.clearData();
+      })
+      .finally(() => {
+        this.loadingCtrl.dismiss();
+      });
+  }
+
+  async prepareLocationObject() {
+    this.location.location_id = this.selectedTicket.location_id.toString();
+    this.location.location_string = this.selectedTicket.location_type;
+    this.locationSub = this.orderService
+      .findLocationwithID(this.location)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.location_string = data;
+        },
+        error: (error: HttpErrorResponse) => {
+          switch (error.status) {
+            case 200:
+              console.log(error);
+              this.location_string = error.error.text;
+              break;
+
+            default:
+              break;
+          }
+        },
+      });
+  }
+
+  async fetchTechnicians() {
+    this.ticketService.fetchTechnicians().subscribe({
+      next: (response) => {
+        if (response) {
+          this.technicians = response;
+        }
+      },
+    });
+  }
+
+  async assignTicket(event: any) {
+    this.selectedTicket.technician = event.detail.value;
+    console.log(this.selectedTicket.technician);
+    this.ticketService.assignTicket(this.selectedTicket).subscribe({
+      next: (response) => {
+        if (response) {
+          this.assigned = true;
+        }
+      },
+    });
+  }
+  async fetchAllTickets(): Promise<Ticket[]> {
+    this.ticketService.fetchAllTickets().subscribe({
+      next: (response) => {
+        if (response) {
+          console.log(response);
+          this.tempStorage = response;
+
+          this.tickets = this.tempStorage;
+        }
+      },
+    });
+    return this.tickets;
+  }
+
+  async fetchClosedTickets(): Promise<Ticket[]> {
+    this.ticketService.fetchClosedTickets().subscribe({
+      next: (response) => {
+        if (response) {
+          console.log(response.ticket);
+          this.closedTempStorage = response;
+          this.closedTickets = this.closedTempStorage;
+        }
+      },
+    });
+    return this.closedTickets;
+  }
+  async filterByTech() {
+    this.isFiltered = true;
+    switch (this.type) {
+      case 'open':
+        this.tickets = this.tempStorage;
+        this.tickets = this.tickets.filter((z) => z.technician == this.tech);
+
+        break;
+
+      default:
+        this.closedTickets = this.closedTempStorage;
+        this.closedTickets = this.tickets.filter(
+          (z) => z.technician == this.tech
+        );
+
+        break;
+    }
+  }
+  async resetFilter() {
+    switch (this.type) {
+      case 'open':
+        if (this.isFiltered) {
+          this.tech = '';
+          this.paginatedTickets('root', 1);
+          this.isFiltered = false;
+        } else {
+          this.presentFilterToast(
+            'Filter is not applied, please filter before Resetting',
+            1500
+          );
+        }
+
+        break;
+
+      default:
+        if (this.isFiltered) {
+          this.tech = '';
+          this.isFiltered = false;
+          this.PaginatedClosedTickets('root', 1);
+        } else {
+          this.presentFilterToast(
+            'Filter is not applied, please filter before Resetting',
+            1500
+          );
+        }
+        break;
+    }
+  }
+
+  async presentFilterToast(_message: string, _duration?: number) {
+    const toast = await this.toastCtrl.create({
+      message: _message,
+      position: 'middle',
+      duration: _duration,
+      buttons: [
+        {
+          text: 'Close',
+          role: 'ok',
+          handler: () => {},
+        },
+      ],
+    });
+    return await toast.present();
+  }
+
+  search(event: any) {
+    let searchString = event.detail.value;
+    if (searchString != '') {
+      switch (this.type) {
+        case 'open':
+          this.tickets = this.tempStorage;
+          this.tickets = this.tickets.filter(
+            (z) => z.ticket_reference == searchString
+          );
+          break;
+
+        default:
+          console.log('closed section', this.closedTempStorage);
+          this.closedTickets = this.closedTempStorage;
+          this.closedTickets = this.closedTickets.filter(
+            (z) => z.ticket_reference == searchString
+          );
+          break;
+      }
+    } else {
+      switch (this.type) {
+        case 'open':
+          this.paginatedTickets('root', 1);
+          break;
+
+        default:
+          this.PaginatedClosedTickets('root', 1);
+
+          break;
+      }
+    }
+  }
+  clearData() {
+    this.selectedTicket = {
+      ticket_id: 0,
+      ticket_reference: '',
+      ticket_status: 0,
+      location_id: 0,
+      location_type: '',
+      service_id: 0,
+      fault_id: 0,
+      fault_description: '',
+      comments: '',
+      client_name: '',
+      client_surname: '',
+      client_contact_number: '',
+      client_email: '',
+      creation_date: '',
+      network_id: '',
+      alternative_contact_name: '',
+      alternative_number: '',
+      last_updated: '',
+      organization_id: 0,
+      technician: '',
+    };
+    this.assigned = false;
+    this.isResolved = false;
+    this.comments = [];
+  }
+}

@@ -14,15 +14,14 @@ import { HttpResponse } from '@capacitor/core';
   styleUrls: ['./home.page.scss', '../../global.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  // title = 'thinkspeed | Admin';
   loginGroup: FormGroup;
   loggedIn = false;
   loginSub!: Subscription;
   user: User = {
-    userID: 0,
+    user_id: 0,
     account_name: '',
-    organization: '',
-    role: '',
+    organization: 0,
+    role: 0,
     token: '',
     email: '',
   };
@@ -45,6 +44,14 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
+    this.user = {
+      user_id: 0,
+      account_name: '',
+      organization: 0,
+      role: 0,
+      token: '',
+      email: '',
+    };
     if (this.loginSub) {
       this.loginSub.unsubscribe();
     }
@@ -70,32 +77,38 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.loginGroup.valid) {
       this.loginSub = this.loginService.login(this.loginGroup.value).subscribe({
         next: (data) => {
-          if(data){
-          this.loadingCtrl.dismiss();
-          this.loginService.setToken(data);
-          this.loginService.loggedIn();
-          this.router.navigateByUrl('dashboard');
-
-          }
-          else{
+          if (data) {
+            this.loadingCtrl.dismiss();
+            this.loginService.setToken(data);
+            this.loginService.loggedIn();
+            this.router.navigateByUrl('/dashboard');
+          } else {
             this.presentToast('User does not exist, Create an account');
             this.loadingCtrl.dismiss();
-
           }
         },
         error: (error: HttpResponse) => {
           switch (error.status) {
             case 401:
               this.presentToast('Credentials are invalid, Try again');
-              this.loadingCtrl.dismiss();
+              // this.loadingCtrl.dismiss();
 
+              break;
+            case 0:
+              this.presentToast('Please contact support, Server may be down');
+              // this.loadingCtrl.dismiss();
+
+              break;
+            case 400:
+              this.presentToast('Please contact support, Server may be down');
+              // this.loadingCtrl.dismiss();
               break;
 
             default:
               break;
           }
+          this.loadingCtrl.dismiss();
         },
-
       });
     }
   }

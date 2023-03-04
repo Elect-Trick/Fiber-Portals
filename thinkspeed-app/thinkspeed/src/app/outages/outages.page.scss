@@ -1,0 +1,98 @@
+.filter-item{
+    --background:#e9ecef;
+  }
+  ion-item.search-item{
+    --background:#e9ecef;
+    margin-left: 45%;
+
+  }
+  .list-item:hover{
+
+    border: 1px solid #74c0fc;
+    cursor: pointer;
+
+  }
+
+  .search-box{
+    --background: white;
+  }
+
+
+  .accord-header{
+    --background:#e9ecef;
+
+
+  }
+  li{
+    list-style-type: none;
+    padding-right:2%;
+  }
+  li{
+
+    width: 30px;
+
+  }
+  a{
+    font-size: 20px;
+    width: 30px;
+
+  }
+  a:hover{
+    // font-size: 29px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid green;
+    color: red;
+    background: #000 !important;
+
+  }
+  .pager{
+    display: flex;
+    position: relative;
+    margin-left: 45%;
+    // margin-top: -2%;
+  }
+  ion-textarea.description-text {
+    --background: #373737;
+    --color: #fff;
+    --padding-end: 10px;
+    --padding-start: 10px;
+    --placeholder-color: #ddd;
+    --placeholder-opacity: 0.8;
+  }
+  .back{
+  height: 48.2px;
+  }
+
+
+  .comments-toolbar {
+    margin-left: 1%;
+  }
+  ion-card.comment-list {
+    display: block;
+    padding-top: 0 !important;
+    // justify-items: flex-start;
+    // justify-content: flex-end;
+  }
+  ion-card.comment-list:nth-of-type(2n) {
+    // display: flex;
+    // justify-content: flex-end;
+    --background: #e7f5ff;
+    // display: grid;
+    // justify-content:
+  }
+  .ticket-list {
+    height: 500px;
+    overflow: scroll;
+  }
+  .resolved-btn{
+    height: 48.2px;
+    position: relative;
+    --background: #2dd36f;
+
+
+  }
+  .reset-filer{
+    --background: #eb445a;
+    color: #FFF;
+  }

@@ -1,0 +1,65 @@
+// #map {
+//   border: 1px solid red;
+//   height: 100%;
+//   // position: absolute;
+//   top: 0;
+//   bottom: 0;
+//   // width: 10%;
+// }
+.map-container{
+  width: 100% !important;
+
+}
+.search {
+
+  width: 50%;
+  margin-bottom: 5px;
+}
+
+.map {
+  // margin-top: 20px;
+  // margin-left: 6px;
+  // height: 305px;
+  // width: 100% !important;
+  // position: relative;
+  height: 305px;
+  width: 100% !important;
+
+  // position: absolute;
+  // top: 0;
+  // bottom: 0;
+  // z-index: 2;
+  // position: absolute;
+}
+.footer{
+  --background:white;
+}
+.add-location{
+  --background:primary;
+}
+.add-location:hover{
+
+
+  --background: blue;
+  color:white;
+}
+.grid-item{
+  margin-left: -8%;
+}
+.fsan-input{
+  margin-left: 5.5% !important;
+}
+.location-details{
+  margin-top: 4.5%;
+}
+
+ion-toast.success-toast{
+  --background: #2dd36f;
+  --color: #2dd36f;
+}
+.item-descriptor{
+  margin-top: 3%;
+}
+.main-card{
+  margin-top: 2%;
+}

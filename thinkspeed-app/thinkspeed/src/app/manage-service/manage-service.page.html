@@ -1,0 +1,597 @@
+<!-- eslint-disable @angular-eslint/template/eqeqeq -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <ion-col sizeXs="8.5" sizeMd="6" offsetMd="3.5">
+          <img
+            class="heading-img"
+            src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+          />
+        </ion-col>
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card class="main-card">
+    <ion-card-header class="form-toolbar">
+      <ion-toolbar>
+        <ion-title class="header-description"> Search for Service </ion-title>
+      </ion-toolbar>
+    </ion-card-header>
+    <ion-card-content class="location-content">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="2" class="search-type-checkboxes">
+            <ion-radio-group
+              value="sdu"
+              (ionChange)="toggleLocationType($event)"
+            >
+              <ion-item lines="none">
+                <ion-radio checked="true" id="sdu" value="sdu"></ion-radio>
+                <label class="checkbox-label" for="sdu"> SDU</label>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-radio id="mdu" value="mdu"></ion-radio>
+                <label class="checkbox-label" for="mdu"> MDU</label>
+              </ion-item>
+            </ion-radio-group>
+          </ion-col>
+          <ion-col size="10">
+            <ion-item lines="none">
+              <ion-segment
+                [(ngModel)]="type"
+                (ionChange)="activateSegment($event)"
+                value="location"
+              >
+                <ion-segment-button value="location">
+                  <ion-label>Search by Location</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="mdu">
+                  <ion-label>Search by Network Identifier</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+            </ion-item>
+            <div class="message" *ngIf="type==='location'">
+              <label for="">*Search is to be comma seperated</label>
+            </div>
+            <div class="search-fields">
+              <ion-item lines="none" *ngIf="type==='mdu'">
+                <ion-searchbar
+                  #searcher
+                  [debounce]="500"
+                  type="text"
+                  placeholder="eg. 48575443C2EFF2A6"
+                  (ionChange)="search($event)"
+                  (ionClear)="clearSearch($event)"
+                  animated="true"
+                  show-clear-button="focus"
+                ></ion-searchbar>
+              </ion-item>
+              <ion-item lines="none" *ngIf="type==='location'">
+                <ion-searchbar
+                  #searcher
+                  [debounce]="500"
+                  type="text"
+                  placeholder="eg. 7, Edwards street"
+                  (ionChange)="search($event)"
+                  (ionClear)="clearSearch($event)"
+                  animated="true"
+                  show-clear-button="focus"
+                ></ion-searchbar>
+              </ion-item>
+            </div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="found">
+          <ion-col size="12">
+            <ion-card class="location-list">
+              <ion-card-content>
+                <ion-list>
+                  <ion-item
+                    class="location-item"
+                    (click)="confirmService(location)"
+                    *ngFor="let location of locations"
+                  >
+                    <ion-icon slot="start" name="location"></ion-icon>
+                    <ion-label>{{location.location_string}}</ion-label>
+                  </ion-item>
+                  <ion-item *ngIf="!found">
+                    <ion-col size="5"> </ion-col>
+                    <ion-label>No Matches, Refine the search</ion-label>
+                  </ion-item>
+                </ion-list>
+                <ion-list *ngIf="type!=='location'">
+                  <ion-item
+                    class="location-item"
+                    (click)="viewService(service)"
+                    *ngFor="let service of services"
+                  >
+                    <ion-icon slot="start" name="location"></ion-icon>
+                    <ion-label>{{service.location_string}}</ion-label>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item *ngIf="isSelected" lines="none">
+              <ion-label>{{selectedService.location_string}}</ion-label>
+              <ion-icon
+                class="selected-location-icon"
+                name="checkmark-done-outline"
+                >i</ion-icon
+              >
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-grid *ngIf="isSelected">
+    <ion-row>
+      <ion-col sizeXs="12" sizeMd="4">
+        <ion-card>
+          <ion-card-header class="form-toolbar">
+            <ion-toolbar>
+              <ion-item lines="none" class="service-tab-heading">
+                <ion-icon slot="start" name="bag"></ion-icon>
+                <ion-title> Product Details </ion-title>
+              </ion-item>
+            </ion-toolbar>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <h6>Download Speed</h6>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6"
+                    ><ion-item lines="none" class="client-details-item">
+                      <ion-label>{{speedProfile.download}} Mbps</ion-label>
+                    </ion-item></ion-col
+                  >
+                  <ion-col size="6">
+                    <ion-button
+                      (click)="setOpen(true)"
+                      expand="block"
+                      fill="fill"
+                      shape="square"
+                    >
+                      <ion-icon slot="start" name="swap-vertical"></ion-icon>
+                      Regrade
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <h6>Upload Speed</h6>
+
+              <ion-item lines="none" class="client-details-item">
+                <ion-label>{{speedProfile.upload}} Mbps</ion-label>
+              </ion-item>
+              <h6>ISP</h6>
+
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col sizeXs="12" sizeMd="6">
+                    <ion-item lines="none" class="client-details-item">
+                      <ion-label
+                        >{{fectchSISPName(selectedService.organization_id)}}</ion-label
+                      >
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-item lines="none">
+                      <img
+                        class="product-image"
+                        src="{{fetchISPImages(selectedService.organization_id)}}"
+                        alt=""
+                      />
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <h6>ISP Reference Number</h6>
+              <ion-item lines="none">
+                <ion-label>{{selectedService.isp_order_number}}</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col sizeXs="12" sizeMd="4">
+        <ion-card>
+          <ion-card-header class="form-toolbar">
+            <ion-toolbar>
+              <ion-item lines="none" class="service-tab-heading">
+                <ion-icon slot="start" name="cog"></ion-icon>
+                <ion-title>Service Status </ion-title>
+              </ion-item>
+            </ion-toolbar>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <h6>Status</h6>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6"
+                    ><ion-item lines="none" class="client-details-item">
+                      <ion-label
+                        >{{fectchServiceStatus(selectedService.service_status)}}</ion-label
+                      >
+                    </ion-item></ion-col
+                  >
+                  <ion-col size="6">
+                    <ion-button
+                      [disabled]="selectedService.service_status !==2"
+                      expand="block"
+                      fill="fill"
+                      shape="square"
+                    >
+                      <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                      Refresh Line
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <h6>Last Updated</h6>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6"
+                    ><ion-item lines="none" class="client-details-item">
+                      <ion-label>{{"Today"}}</ion-label>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-button
+                      (click)="setTicketModal(true)"
+                      expand="block"
+                      fill="fill"
+                      shape="square"
+                    >
+                      <ion-icon slot="start" name="ticket"></ion-icon>
+                      Log a Ticket
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <h6>Network ID</h6>
+              <ion-item lines="none" class="client-details-item">
+                <!-- <ion-label>{{selectedService.network_id}}</ion-label> -->
+                <ion-label>{{selectedService.isp_modem_mac}}</ion-label>
+              </ion-item>
+
+              <h6>Modem MAC</h6>
+              <ion-item lines="none" class="client-details-item">
+                <ion-label>{{selectedService.isp_modem_mac}}</ion-label>
+              </ion-item>
+
+              <!-- <ion-item lines="none" class="client-details-item">
+                <ion-button
+                  (click)="viewService('service')"
+                  expand="full"
+                  fill="clear"
+                  shape="square"
+                >
+                  View Service
+                </ion-button>
+              </ion-item> -->
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col sizeXs="12" sizeMd="4">
+        <ion-card>
+          <ion-card-header class="form-toolbar">
+            <ion-toolbar>
+              <ion-item lines="none" class="service-tab-heading">
+                <ion-icon slot="start" name="receipt"></ion-icon>
+                <ion-title>Order Details</ion-title>
+              </ion-item>
+            </ion-toolbar>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6">
+                    <h6>Order Type</h6>
+                    <ion-item lines="none" class="client-details-item">
+                      <ion-label
+                        >{{fetchOrderTypes(selectedService.order_type)}}</ion-label
+                      >
+                    </ion-item></ion-col
+                  >
+                  <ion-col size="6">
+                    <h6>Order Number</h6>
+                    <ion-item lines="none" class="client-details-item">
+                      <ion-label>{{selectedService.order_number}}</ion-label>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <h6>Location</h6>
+              <ion-item lines="none" class="client-details-item">
+                <ion-label>{{selectedService.location_string}} </ion-label>
+              </ion-item>
+              <h6>Client</h6>
+              <ion-item lines="none" class="client-details-item">
+                <ion-label
+                  >{{selectedService.client_name}}
+                  {{selectedService.client_surname}}
+                </ion-label>
+              </ion-item>
+              <ion-grid fixed>
+                <ion-row>
+                  <ion-col size="6">
+                    <h6>Email</h6>
+                    <ion-item lines="none" class="client-details-item">
+                      <ion-label>{{selectedService.client_email}} </ion-label>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col size="6">
+                    <h6>Contact</h6>
+                    <ion-item lines="none" class="client-details-item">
+                      <ion-label
+                        >{{selectedService.client_contact_number}}
+                      </ion-label>
+                    </ion-item></ion-col
+                  >
+                </ion-row>
+              </ion-grid>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header class="form-toolbar">
+            <ion-toolbar>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-title>Order History</ion-title>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="3">
+                  <ion-label>Order Number</ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-label>Date</ion-label>
+                </ion-col>
+                <ion-col size="2"><ion-label>Order Type</ion-label></ion-col>
+                <ion-col size="2.5"><ion-label>Status</ion-label></ion-col>
+                <ion-col size="1"><ion-label>Actions</ion-label></ion-col>
+              </ion-row>
+            </ion-toolbar>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-row *ngFor="let item of history">
+                <ion-col size="12">
+                  <ion-item>
+                    <ion-col size="2.9">
+                      <ion-label>{{item.order_number}}</ion-label></ion-col
+                    >
+                    <ion-col size="3.1"> {{item.date}}</ion-col>
+                    <ion-col size="2.1">
+                      {{fetchServiceChangeNames(item.order_type)}}</ion-col
+                    >
+                    <ion-col size="2.6">
+                      {{fetchRegradeStatus(item.order_status)}}</ion-col
+                    >
+                    <ion-col size="1">
+                      <ion-button
+                        [disabled]="item.order_status !=1"
+                        class="cancel-btn"
+                        expand="block"
+                        fill="clear"
+                        shape="square"
+                        (click)="presentAlert(item)"
+                      >
+                        <ion-icon
+                          class="manage-regrade"
+                          name="close-circle-outline"
+                        ></ion-icon>
+                        Cancel
+                      </ion-button></ion-col
+                    >
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-modal (ionModalDidDismiss)="(setOpen(false))" [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Service Speed Change</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">
+              <ion-icon slot="start" name="close"></ion-icon>
+              Cancel</ion-button
+            >
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid>
+          <ion-card>
+            <ion-card-content>
+              <ion-row>
+                <ion-col size="3">
+                  <ion-label>New Speed</ion-label>
+                </ion-col>
+                <ion-col size="9">
+                  <ion-item>
+                    <ion-select
+                      [(ngModel)]="regradeRequest.product_id"
+                      placeholder="Select New Speed"
+                    >
+                      <ion-select-option
+                        *ngFor="let product of products"
+                        value="{{product.product_id}}"
+                        >{{product.product_name}}</ion-select-option
+                      >
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="3">
+                  <ion-label>Ext Reference</ion-label></ion-col
+                >
+                <ion-col size="9">
+                  <ion-item>
+                    <ion-input
+                      [(ngModel)]="regradeRequest.ext_reference"
+                      type="text"
+                      placeholder="eg. AH12659368"
+                    ></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-button
+                    (click)="regrade()"
+                    expand="block"
+                    fill="full"
+                    shape="square"
+                  >
+                    Submit regrade
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal
+    (ionModalDidDismiss)="(setTicketModal(false))"
+    [isOpen]="ticketModallOpen"
+  >
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Log a Ticket</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setTicketModal(false)">
+              <ion-icon slot="start" name="close"></ion-icon>
+              Cancel</ion-button
+            >
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid>
+          <ion-card>
+            <ion-card-content>
+              <ion-row>
+                <ion-col size="3">
+                  <ion-label>Network Issue</ion-label>
+                </ion-col>
+                <ion-col size="9">
+                  <ion-item>
+                    <ion-select
+                      [(ngModel)]="ticket.fault_id"
+                      placeholder="Select Issue"
+                    >
+                      <ion-select-option
+                        *ngFor="let fault of faultTypes"
+                        value="{{fault.fault_id}}"
+                        >{{fault.fault_name}}</ion-select-option
+                      >
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="3"> <ion-label>Description</ion-label></ion-col>
+                <ion-col size="9">
+                  <ion-item>
+                    <ion-textarea
+                      [(ngModel)]="ticket.fault_description"
+                      type="text"
+                      placeholder="eg. Los is flashing red, No Gateway from ONT"
+                    ></ion-textarea>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item>
+                    <ion-checkbox
+                      (ionChange)="toggleAltContact()"
+                      slot="start"
+                    ></ion-checkbox>
+                    <ion-label>Add Alternative Contact</ion-label>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="alternativeContact">
+                <ion-col size="3"> <ion-label>Name</ion-label></ion-col>
+                <ion-col size="9">
+                  <ion-item>
+                    <ion-textarea
+                      [(ngModel)]="ticket.alternative_contact_name"
+                      type="text"
+                      placeholder="eg. Marco"
+                    ></ion-textarea>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+
+              <ion-row *ngIf="alternativeContact">
+                <ion-col size="3"> <ion-label>Number</ion-label></ion-col>
+                <ion-col size="9">
+                  <ion-item>
+                    <ion-textarea
+                      [(ngModel)]="ticket.alternative_number"
+                      type="text"
+                      placeholder="eg. 0784475902"
+                    ></ion-textarea>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-button
+                    (click)="logTicket()"
+                    expand="block"
+                    fill="full"
+                    shape="square"
+                  >
+                    Submit Ticket
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <img
+    *ngIf="!isSelected"
+    class="search-image"
+    src="../../assets/image/curious-analyst-investigating-question-mark-with-magnifier/Curious analyst investigating question mark with magnifier.jpg"
+  />
+</ion-content>

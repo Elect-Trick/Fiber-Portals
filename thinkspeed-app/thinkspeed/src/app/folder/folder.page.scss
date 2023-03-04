@@ -26,7 +26,39 @@ ion-menu-button {
 #container a {
   text-decoration: none;
 }
-img{
+img {
   transform: scale(0.5);
   margin-left: 50%;
+}
+.review-item-count{
+  text-align: center;
+
+}
+.review-description {
+  text-align: center;
+  font-size: 24px;
+
+}
+
+
+.toolbar:first-child{
+  --background:#9bcfff;
+}
+
+.summary-card{
+  // color: #9bcfff;
+  --background:#e7f5ff;
+
+}
+.chart{
+  position: relative;
+  height:70vh;
+   width:80vw;
+   margin-left: 15%;
+}
+
+.service{
+  width:100%;
+   height:auto;
+   position: absolute;
 }

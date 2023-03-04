@@ -1,0 +1,281 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <ion-col sizeXs="8.5" sizeMd="6" offsetMd="3.5">
+          <img
+            class="heading-img"
+            src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+          />
+        </ion-col>
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header class="form-toolbar">
+      <ion-toolbar>
+        <ion-title>Manage Network Incidents</ion-title>
+      </ion-toolbar>
+      <ion-toolbar>
+      </ion-toolbar>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-card>
+        <ion-card-header class="form-toolbar">
+          <ion-toolbar>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="3">
+                  <ion-item
+                    *ngIf="type !=='closed'"
+                    lines="none"
+                    class="filter-item"
+                  >
+                    <ion-title>({{totalEntries}}) Open Incidents</ion-title>
+                  </ion-item>
+                  <ion-item
+                    *ngIf="type !=='open' && type !==''"
+                    lines="none"
+                    class="filter-item"
+                  >
+                    <ion-title>({{totalEntries}}) Closed Incidents</ion-title>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="2">
+                  <ion-segment
+                    value="{{type}}"
+                    (ionChange)="segmentChanged($event)"
+                  >
+                    <ion-segment-button value="open">
+                      <ion-label>Open</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="closed">
+                      <ion-label>Closed</ion-label>
+                    </ion-segment-button>
+                  </ion-segment>
+                </ion-col>
+                <ion-col size="1">
+                  <ion-item lines="none" class="filter-item">
+                    <ion-button
+                      [disabled]="type ===''"
+                      (click)="resetFilter()"
+                      expand="block"
+                      fill="full"
+                      shape="square"
+                      class="reset-filter"
+                    >
+                      Reset Filter
+                    </ion-button>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="5">
+                  <ion-item lines="none" class="search-item form-control">
+                    <ion-label for="search">Incident Search : </ion-label>
+                    <ion-searchbar
+                      placeholder="eg.OTG-0018"
+                      (ionChange)="search($event)"
+                      show-cancel-button="focus"
+                    ></ion-searchbar> </ion-item
+                ></ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-toolbar>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="1"></ion-col>
+                        <ion-col size="2.5">Incident ID</ion-col>
+                        <ion-col size="2.5">Fault Description</ion-col>
+                        <ion-col size="2">Date Logged</ion-col>
+                        <ion-col size="2"> Status </ion-col>
+                        <ion-col size="2"> Last Updated </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-toolbar>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-toolbar>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row>
+            <ion-col size="12">
+              <ion-list>
+                <ion-grid>
+                  <ion-accordion-group
+                    animated="false"
+                    (ionChange)="selectOutage($event)"
+                  >
+                    <ion-accordion
+                      (click)="$event.stopPropagation()"
+                      class="accord-header"
+                      #mine
+                      *ngFor="let index;let outage of outages"
+                      [value]="outage.outage_reference"
+                    >
+                      <ion-item slot="header">
+                        <ion-col size="1">
+                          <ion-item class="item-icon" lines="none">
+                            <ion-icon slot="start" name="lock-closed"></ion-icon
+                          ></ion-item>
+                        </ion-col>
+                        <ion-col size="2.5">
+                          <ion-label>{{outage.outage_reference}}</ion-label>
+                        </ion-col>
+                        <ion-col size="2.5">
+                          <ion-label
+                            >{{IncidentName(outage.incident_type)}}</ion-label
+                          >
+                        </ion-col>
+                        <ion-col size="2">
+                          <ion-label>{{outage.date}}</ion-label>
+                        </ion-col>
+                        <ion-col size="2">
+                          <ion-label
+                            >{{StatusName(outage.outage_status) ||
+                            '--Unkwown--'}}</ion-label
+                          >
+                        </ion-col>
+                        <ion-col size="2">
+                          <ion-label>{{outage.last_updated}}</ion-label>
+                        </ion-col>
+                      </ion-item>
+                      <div (click)="$event.stopPropagation()" slot="content">
+                        <ion-card (click)="$event.stopPropagation()">
+                          <ion-card-header>
+                            <ion-item>
+                              <ion-card-title>
+                                {{outage.outage_reference}}</ion-card-title
+                              >
+
+
+                            </ion-item>
+                          </ion-card-header>
+                          <ion-card-content class="outage-content">
+                            <ion-row>
+                              <ion-col size="4">
+                                <ion-card>
+                                  <ion-card-header>
+                                    <ion-card-title
+                                      >Affected Areas</ion-card-title
+                                    >
+                                  </ion-card-header>
+                                  <ion-card-content>
+                                    <h2>{{outage.affected_areas}}</h2>
+                                  </ion-card-content>
+                                </ion-card>
+                              </ion-col>
+                              <ion-col size="6">
+                                <ion-card (click)="$event.stopPropagation()">
+                                  <ion-card-header>
+                                    <ion-card-title
+                                      >Incident Updates</ion-card-title
+                                    >
+                                  </ion-card-header>
+                                  <ion-card-content>
+                                    <ion-card class="comments-table">
+                                      <!-- <ion-item lines="none">
+                                      </ion-item> -->
+
+                                      <div
+                                        *ngFor="let item of comments"
+                                        class="incident-update"
+                                      >
+                                        <h2 class="comment-date-label">
+                                          {{item.comment_date}}
+                                        </h2>
+                                        <h3>{{item.comment}}</h3>
+                                        <br />
+                                      </div>
+                                    </ion-card>
+                                  </ion-card-content>
+                                </ion-card>
+                              </ion-col>
+                            </ion-row>
+                          </ion-card-content>
+                        </ion-card>
+                      </div>
+                    </ion-accordion>
+                  </ion-accordion-group>
+                  <!-- <ion-row
+                    *ngFor="let index;let outage of outages"
+                    (click)="selectOutage(outage)"
+                    class="list-item"
+                  >
+
+                  </ion-row> -->
+                </ion-grid>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-footer>
+    <ion-toolbar>
+      <div class="pager">
+        <li
+          (click)="goToPage('root',item)"
+          *ngFor="let item of paginationArray;let index"
+        >
+          <a class="active_link">{{index}}</a>
+        </li>
+      </div>
+    </ion-toolbar>
+  </ion-footer>
+  <ion-modal [isOpen]="updateModal" (ionModalDidDismiss)="triggerUpdate(false)">
+    <ng-template #name>
+      <!-- <ion-header>
+        <ion-toolbar>
+          <ion-title>Add Incident Update</ion-title>
+          <ion-buttons slot="end">
+            <ion-item lines="none" color="#e9ecef">
+              <ion-button type="submit" fill="full">
+                <ion-icon slot="start" name="add"></ion-icon>
+                Create
+              </ion-button>
+            </ion-item>
+
+              </ion-buttons>
+        </ion-toolbar>
+      </ion-header> -->
+      <ion-card>
+        <ion-card-header class="form-toolbar">
+          <ion-toolbar>
+            <ion-title>Add Incident Update</ion-title>
+            <ion-buttons slot="end">
+              <ion-item lines="none" color="#e9ecef">
+                <ion-button (click)="postUpdate()" type="submit" fill="full">
+                  <ion-icon slot="start" name="add"></ion-icon>
+                  Post Update
+                </ion-button>
+              </ion-item>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item>
+                <ion-label for="report">Add Below this line</ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-textarea
+                  [(ngModel)]="update"
+                  id="report"
+                  class="custom-textarea"
+                ></ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ng-template>
+  </ion-modal>
+</ion-content>

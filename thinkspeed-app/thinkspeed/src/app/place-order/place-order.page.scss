@@ -1,3 +1,6 @@
+.heading-img{
+  transform: scale(0.5);
+}
 .header-description{
   font-size:18px;
   margin-top: 10px;
@@ -51,4 +54,11 @@ ion-accordion-group{
   // padding-right: 24px;
   // padding-left: 24px;
 
+}
+.message{
+  margin-left: 22px;
+  color: orange;
+}
+.network_id{
+  margin-top: -10px;
 }

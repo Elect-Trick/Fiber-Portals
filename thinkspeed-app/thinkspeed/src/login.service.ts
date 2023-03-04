@@ -4,39 +4,38 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
-public token!:string;
-tokenSource = new ReplaySubject<any>(1);
-token$ = this.tokenSource.asObservable();
-data = false;
-baseURL = "https://localhost/xampp/";
+  public token!: string;
+  tokenSource = new ReplaySubject<any>(1);
+  token$ = this.tokenSource.asObservable();
+  data = false;
+  baseURL = 'https://localhost/xampp/';
 
-  constructor(private http : HttpClient) {
-
-   }
-   refreshToken():Observable<HttpResponse>{
-    return this.http.get<HttpResponse>(`${this.baseURL}thinkspeed.php?refreshToken`);
-   }
-
-  login(data: any):Observable<HttpResponse>{
-
-    return this.http.post<HttpResponse>(`${this.baseURL}login.php?login`,data);
+  constructor(private http: HttpClient) {}
+  refreshToken(): Observable<HttpResponse> {
+    return this.http.get<HttpResponse>(
+      `${this.baseURL}thinkspeed.php?refreshToken`
+    );
   }
 
-  getAllUserRoles():Observable<any>{
-  return  this.http.get<any>(`${this.baseURL}thinkspeed.php?getAllUserRoles`);
-
+  login(data: any): Observable<HttpResponse> {
+    return this.http.post<HttpResponse>(`${this.baseURL}login.php?login`, data);
   }
 
-  getOrginzations():Observable<any>{
-    return this.http.get<any>(`${this.baseURL}organizations.php?getOrganizations`);
+  getAllUserRoles(): Observable<any> {
+    return this.http.get<any>(`${this.baseURL}thinkspeed.php?getAllUserRoles`);
   }
 
-  loggedIn(){
+  getOrginzations(): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseURL}organizations.php?getOrganizations`
+    );
+  }
 
- let data = localStorage.getItem('token');
+  loggedIn() {
+    let data = localStorage.getItem('token');
     this.tokenSource.next(data);
   }
   setToken(data: any) {
@@ -44,9 +43,15 @@ baseURL = "https://localhost/xampp/";
     const token = localStorage.setItem('token', data as any);
   }
 
-  signOut(){
+  signOut() {
     localStorage.clear();
     this.tokenSource.next(null as any);
   }
 
+  fetchStats() {
+    return this.http.get<any>(`${this.baseURL}thinkspeed.php?fetch-stats`);
+  }
+  getStats() {
+    return this.http.get<any>(`${this.baseURL}thinkspeed.php?get-stats`);
+  }
 }

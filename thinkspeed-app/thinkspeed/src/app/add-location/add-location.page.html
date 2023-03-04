@@ -1,0 +1,287 @@
+<ion-header>
+  <link rel="stylesheet" type="text/css" />
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <ion-col sizeXs="8.5" sizeMd="6" offsetMd="3.5">
+          <img
+            class="heading-img"
+            src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+          />
+        </ion-col>
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- <div id="map"></div> -->
+
+  <ion-card class="main-card">
+    <ion-card-header>
+      <ion-toolbar class="form-toolbar">
+        <ion-card-title>Add A Location</ion-card-title>
+      </ion-toolbar>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col sizeXs="12" sizeMd="12" sizeLg="6" size="12" class="map">
+            <input
+              (ionChange)="nullChecker($event)"
+              class="search"
+              ngx-google-places-autocomplete
+              #placesRef="ngx-places"
+              (onAddressChange)="handleAddressChange($event)"
+            />
+            <google-map
+              #map
+              width="100%"
+              height="305px"
+              [center]="LatLngLit"
+            ></google-map>
+          </ion-col>
+          <ion-col sizeXs="12" sizeMd="12" sizeLg="6" size="12">
+            <ion-card [disabled]="!locationSelected" class="location-details">
+              <ion-card-header>
+                <ion-toolbar class="form-toolbar">
+                  <ion-segment
+                    value="{{type}}"
+                    (ionChange)="segmentChanged($event)"
+                  >
+                    <ion-segment-button value="sdu">
+                      <ion-label>Single/House</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="mdu">
+                      <ion-label>Multi/Complex</ion-label>
+                    </ion-segment-button>
+                  </ion-segment>
+                </ion-toolbar>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-item-group *ngIf="(type !=='mdu') &&(type !=='')">
+                  <ion-item>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="6">
+                          <ion-item>
+                            <ion-label>Is Installed ?</ion-label>
+                          </ion-item>
+                        </ion-col>
+
+                        <ion-col size="6">
+                          <ion-row>
+                            <ion-segment  (ionChange)="toggleInstalled($event)">
+                              <ion-segment-button value="yes">
+                                <ion-label>Yes</ion-label>
+                              </ion-segment-button>
+                              <ion-segment-button value="no">
+                                <ion-label>No</ion-label>
+                              </ion-segment-button>
+                            </ion-segment>
+                          </ion-row>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="sduInstalled">
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>FSAN</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-item>
+                            <ion-label class="item-descriptor">{{sduLocation.network_id}}</ion-label>
+                            <!-- <ion-input
+                              class="fsan-input"
+                              type="text"
+                              placeholder="Enter Line Number"
+                              [(ngModel)]="sduLocation.network_id"
+                            ></ion-input> -->
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Location</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-label class="item-descriptor">{{sduLocation.house_number}} {{ sduLocation.street_name}}</ion-label>
+
+                          <!-- <ion-input
+                            [disabled]="true"
+                            class="fsan-input"
+                            type="text"
+                            value=""
+                            placeholder="{{sduLocation.street_name}}, {{sduLocation.surburb}}"
+                          ></ion-input> -->
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Coordinates</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-label class="item-descriptor">{{sduLocation.coordinates}}</ion-label>
+
+                          <!-- <ion-input
+                            [disabled]="true"
+                            class="fsan-input"
+                            type="text"
+                            placeholder="{{sduLocation.coordinates}}"
+                          ></ion-input> -->
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-item>
+                </ion-item-group>
+
+                <ion-item-group *ngIf="(type !=='sdu') &&(type !=='')">
+
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="6">
+                          <ion-item>
+                            <ion-label>Is Installed ?</ion-label>
+                          </ion-item>
+                        </ion-col>
+
+                        <ion-col size="6">
+                          <ion-row>
+                            <ion-segment  (ionChange)="toggleInstalled($event)">
+                              <ion-segment-button value="yes">
+                                <ion-label>Yes</ion-label>
+                              </ion-segment-button>
+                              <ion-segment-button value="no">
+                                <ion-label>No</ion-label>
+                              </ion-segment-button>
+                            </ion-segment>
+                          </ion-row>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="mduInstalled">
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>FSAN</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-item>
+                            <ion-label class="item-descriptor">{{mduLocation.network_id}}</ion-label>
+
+                            <!-- <ion-input
+                              class="fsan-input"
+                              type="text"
+                              placeholder="Enter Line Number"
+                              [(ngModel)]="mduLocation.network_id"
+                            ></ion-input> -->
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Unit Number</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+
+                          <ion-item>
+                            <ion-input
+                              class="fsan-input"
+                              type="text"
+                              value=""
+                              [(ngModel)]="unitNumber"
+                              placeholder="Enter Unit number"
+                            ></ion-input>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Building Name</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-label class="item-descriptor">{{mduLocation.building_name}}</ion-label>
+
+                          <!-- <ion-input
+                            [disabled]="true"
+                            class="fsan-input"
+                            type="text"
+                            value=""
+                            placeholder="{{mduLocation.building_name}}"
+                          ></ion-input> -->
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Location</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-label class="item-descriptor">{{mduLocation.street_name}}</ion-label>
+
+                          <!-- <ion-input
+                            [disabled]="true"
+                            class="fsan-input"
+                            type="text"
+                            value=""
+                            placeholder="{{mduLocation.street_name}}, {{mduLocation.surburb}}"
+                          ></ion-input> -->
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Coordinates</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-label class="item-descriptor">{{mduLocation.coordinates}}</ion-label>
+
+                          <!-- <ion-input
+                            [disabled]="true"
+                            class="fsan-input"
+                            type="text"
+                            placeholder="{{mduLocation.coordinates}}"
+                          ></ion-input> -->
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                </ion-item-group>
+
+                <ion-buttons slot="start">
+                  <ion-button
+                    (click)="addLocation()"
+                    color="primary"
+                    class="add-location"
+                    fill="full"
+                  >
+                    <ion-icon slot="start" name="add"></ion-icon>
+                    Add Location
+                  </ion-button>
+                  <ion-button
+                    (click)="clear()"
+                    color="warning"
+                    expand="block"
+                    fill="full"
+                  >
+                    <ion-icon slot="start" name="trash-outline"></ion-icon>
+                    Cancel
+                  </ion-button>
+                </ion-buttons>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,9 +1,9 @@
 export interface User {
-  userID:number;
+  user_id:number;
   account_name: string;
   email: string;
-  organization: string;
-  role: string;
+  organization: number;
+  role: number;
   token:string;
 
 

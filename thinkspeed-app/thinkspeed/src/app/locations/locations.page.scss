@@ -1,0 +1,57 @@
+.accord-header {
+  // --background: rgb(234, 231, 231);
+  --background: #d4e6f5;
+  // --background: #aef4ca;
+}
+
+ion-card.unit-details {
+  --background: #d5f1e1;
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+ion-button.log-ticket-btn {
+  --background: #ffc409;
+}
+.pager {
+  display: flex;
+  position: relative;
+  margin-left: 45%;
+  // margin-top: -2%;
+}
+a:hover {
+  // font-size: 29px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid green;
+  color: red;
+  background: #000 !important;
+}
+li {
+  list-style-type: none;
+  padding-right: 2%;
+  width: 30px;
+}
+
+a {
+  font-size: 16px;
+  width: 30px;
+}
+
+.unit-list {
+  height: 350px;
+  overflow: scroll;
+}
+
+.list-item {
+  --background: #d4e6f5;
+  border-radius: 4px;
+
+}
+.building-row{
+  border-radius: 4px;
+
+}
+.list-item:hover,.complex-list:hover{
+  --background: #ffc409;
+}

@@ -15,6 +15,6 @@ import { ViewOrderPage } from './view-order.page';
     IonicModule,
     ViewOrderPageRoutingModule
   ],
-  declarations: [ViewOrderPage]
+  declarations: []
 })
 export class ViewOrderPageModule {}

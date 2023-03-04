@@ -2,46 +2,359 @@
   <ion-menu isOpen="isOpen" contentId="main-content" type="overlay">
     <ion-content>
       <ion-list-header>
-        <ion-img
-          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
-        ></ion-img>
+        <ion-menu-toggle>
+          <ion-img
+            class="home-logo"
+            [routerLink]="['/dashboard']"
+            routerDirection="root"
+            src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+          ></ion-img>
+        </ion-menu-toggle>
       </ion-list-header>
+      <!-- <ion-item class="menu-seperator">
+        <ion-label>ISP Menu</ion-label>
+      </ion-item> -->
       <ion-accordion-group>
-        <ion-accordion *ngFor="let page of appPages">
+        <!-- Orders Menu Option -->
+        <ion-accordion>
           <ion-item class="main-menu" lines="none" slot="header" color="light">
-            <ion-icon slot="start" name="{{ page.icon }}"></ion-icon>
-            <ion-label>{{ page.title }}</ion-label>
+            <ion-icon slot="start" name="{{ ispPages[0].icon }}"></ion-icon>
+            <ion-label>{{ ispPages[0].title }}</ion-label>
           </ion-item>
           <div slot="content">
             <ion-menu-toggle>
               <ion-item
-                *ngFor="let item of page.subMenu"
                 routerDirection="root"
-                [routerLink]="[item.url]"
+                [routerLink]="[ispPages[0].subMenu[0].url]"
                 lines="none"
                 detail="false"
                 routerLinkActive="selected"
                 lines="none"
                 class="sub-menu"
               >
-                <ion-icon slot="start" name="{{ item.icon }}"></ion-icon>
-                <ion-label>{{ item.title }}</ion-label>
+                <ion-icon
+                  slot="start"
+                  name="{{ ispPages[0].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ ispPages[0].subMenu[0].title }}</ion-label>
+              </ion-item>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[ispPages[0].subMenu[1].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ ispPages[0].subMenu[1].icon }}"
+                ></ion-icon>
+                <ion-label>{{ ispPages[0].subMenu[1].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+
+        <!-- Services Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ ispPages[1].icon }}"></ion-icon>
+            <ion-label>{{ ispPages[1].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[ispPages[1].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ ispPages[1].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ ispPages[1].subMenu[0].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+
+        <!-- Support Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ ispPages[2].icon }}"></ion-icon>
+            <ion-label>{{ ispPages[2].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[ispPages[2].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ ispPages[2].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ ispPages[2].subMenu[0].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+
+        <!-- Network Incident Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ ispPages[3].icon }}"></ion-icon>
+            <ion-label>{{ ispPages[3].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[ispPages[3].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ ispPages[3].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ ispPages[3].subMenu[0].title }}</ion-label>
               </ion-item>
 
             </ion-menu-toggle>
           </div>
         </ion-accordion>
       </ion-accordion-group>
-      <ion-menu-toggle>
-
-      <ion-item lines="none" class="menu-footer" (click)="logout()">
-        <ion-icon slot="start" name="exit"></ion-icon>
-        <ion-label>Logout</ion-label>
+<!-- FNO MENU -->
+      <ion-item class="menu-seperator">
+        <ion-label>FNO Menu</ion-label>
       </ion-item>
-    </ion-menu-toggle>
+      <ion-accordion-group>
+        <!-- Billing Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ fnoPages[0].icon }}"></ion-icon>
+            <ion-label>{{ fnoPages[0].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[0].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[0].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[0].subMenu[0].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+        <!-- Manage Orders FNO Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ fnoPages[1].icon }}"></ion-icon>
+            <ion-label>{{ fnoPages[1].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[1].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[1].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[1].subMenu[0].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+        <ion-accordion>
+          <!-- Manage Locations Menu Option -->
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ fnoPages[2].icon }}"></ion-icon>
+            <ion-label>{{ fnoPages[2].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[2].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[2].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[2].subMenu[0].title }}</ion-label>
+              </ion-item>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[2].subMenu[1].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[2].subMenu[1].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[2].subMenu[1].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion> <ion-accordion>
+          <!-- Manage Tickets Menu Option -->
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ fnoPages[3].icon }}"></ion-icon>
+            <ion-label>{{ fnoPages[3].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[3].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[3].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[3].subMenu[0].title }}</ion-label>
+              </ion-item>
+              <!-- <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[3].subMenu[1].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[3].subMenu[1].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[3].subMenu[1].title }}</ion-label>
+              </ion-item> -->
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
 
+        <!-- Outages Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ fnoPages[4].icon }}"></ion-icon>
+            <ion-label>{{ fnoPages[4].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[4].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[4].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[4].subMenu[0].title }}</ion-label>
+              </ion-item>
+
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+        <!-- Portal Users Menu Option -->
+        <ion-accordion>
+          <ion-item class="main-menu" lines="none" slot="header" color="light">
+            <ion-icon slot="start" name="{{ fnoPages[5].icon }}"></ion-icon>
+            <ion-label>{{ fnoPages[5].title }}</ion-label>
+          </ion-item>
+          <div slot="content">
+            <ion-menu-toggle>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[5].subMenu[0].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[5].subMenu[0].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[5].subMenu[0].title }}</ion-label>
+              </ion-item>
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[fnoPages[5].subMenu[1].url]"
+                lines="none"
+                detail="false"
+                routerLinkActive="selected"
+                lines="none"
+                class="sub-menu"
+              >
+                <ion-icon
+                  slot="start"
+                  name="{{ fnoPages[5].subMenu[1].icon }}"
+                ></ion-icon>
+                <ion-label>{{ fnoPages[5].subMenu[1].title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+
+      <ion-menu-toggle>
+        <ion-item lines="none" class="menu-footer" (click)="logout()">
+          <ion-icon slot="start" name="exit"></ion-icon>
+          <ion-label>Logout</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
     </ion-content>
-
   </ion-menu>
   <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

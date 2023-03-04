@@ -3,12 +3,15 @@
     <ion-buttons slot="start">
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
-        <img class="heading-img"
-        src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
-      >
+        <ion-col sizeXs="8.5" sizeMd="6" offsetMd="3.5">
+          <img
+          class="heading-img"
+          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+        />
+        </ion-col>
+
       </ion-buttons>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
@@ -169,7 +172,7 @@
                     <ion-item>
                       <ion-label
                         >Role:
-                        {{userDetails.controls['user_role'].value}}</ion-label
+                        {{fetchRoleName(userDetails.controls['user_role'].value)}}</ion-label
                       >
                     </ion-item>
                     <ion-item>
@@ -180,7 +183,7 @@
                     </ion-item>
 
                   </ion-list>
-                  <ion-item>
+                  <ion-item lines="none">
 <img src="{{fetchISPimage(userDetails.controls['organization'].value)}}" alt="">                  </ion-item>
                 </ion-card-content>
               </ion-card></ion-col

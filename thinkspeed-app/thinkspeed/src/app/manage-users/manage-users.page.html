@@ -3,10 +3,12 @@
     <ion-buttons slot="start">
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
-        <img
-          class="heading-img"
-          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
-        />
+        <ion-col sizeXs="8.5" sizeMd="6" offsetMd="3.5">
+          <img
+            class="heading-img"
+            src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+          />
+        </ion-col>
       </ion-buttons>
     </ion-buttons>
   </ion-toolbar>
@@ -15,16 +17,12 @@
   <ion-grid>
     <ion-card>
       <ion-card-header class="form-toolbar">
-        <ion-toolbar >
-          <ion-title
-            >Portal User Details</ion-title
-          >
+        <ion-toolbar>
+          <ion-title>Portal User Details</ion-title>
         </ion-toolbar>
       </ion-card-header>
       <ion-grid>
-        <ion-row>
-
-        </ion-row>
+        <ion-row> </ion-row>
         <ion-row>
           <ion-col size="5" offset="3">
             <ion-item lines="none">
@@ -43,9 +41,9 @@
       </ion-grid>
 
       <ion-card-content>
-        <ion-card>
+        <ion-card class="users-table">
           <ion-card-header class="form-toolbar">
-            <ion-toolbar >
+            <ion-toolbar>
               <ion-row>
                 <ion-col sizeMd="1"> </ion-col>
                 <ion-col sizeMd="3" sizeXs="12"> Account Name: </ion-col>
@@ -56,7 +54,6 @@
             >
           </ion-card-header>
           <ion-card-content>
-
             <ion-list>
               <ion-popover
                 #popover
@@ -93,7 +90,6 @@
               class="user-item"
               *ngFor="let user of users"
             >
-          
               <ion-col sizeXs="12" sizeMd="1">
                 <ion-item lines="none">
                   <ion-icon slot="start" name="person-circle"></ion-icon>
@@ -124,6 +120,21 @@
             </ion-row>
           </ion-card-content>
         </ion-card>
+
+        <ion-footer>
+          <ion-toolbar>
+            <!-- href='index?page={$x}' -->
+            <ion-title>Footer</ion-title>
+            <div class="pager">
+              <li
+                (click)="paginatedResults('root',item)"
+                *ngFor="let item of paginationArray;let index"
+              >
+                <a class="active_link">{{index}}</a>
+              </li>
+            </div>
+          </ion-toolbar>
+        </ion-footer>
       </ion-card-content>
     </ion-card>
   </ion-grid>

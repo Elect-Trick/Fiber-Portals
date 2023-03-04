@@ -1,0 +1,128 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Network Incident</ion-title>
+    <ion-buttons slot="end">
+      <ion-item lines="none" color="#e9ecef">
+        <ion-button [disabled]="!incident_form.valid || affectedAreas.length <1" (click)="logOutage()" type="submit" fill="full">
+          <ion-icon slot="start" name="add"></ion-icon>
+          Create
+        </ion-button>
+      </ion-item>
+
+      <!-- <ion-item lines="none" color="#e9ecef">
+        <ion-button class="cancel-btn" color="danger" fill="full">
+          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+          Cancel
+        </ion-button>
+      </ion-item> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+  <ion-card>
+    <form
+    action="post"
+    [formGroup]="incident_form"
+    (ngSubmit)="logOutage()"
+    #form="ngForm"
+    >
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label>Incident Type</ion-label>
+            <ion-select
+              (ionChange)="incidentChanged($event)"
+              placeholder="Select Incident"
+              formControlName="incident_type"
+            >
+              <ion-select-option
+                [value]="incident.id"
+                *ngFor="let index;let incident of indcidentTypes"
+                >{{incident.name}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label>Severity</ion-label>
+            <ion-select
+              placeholder="Select Severity"
+              (ionChange)="severityChanged($event)"
+              formControlName="severity"
+            >
+              <ion-select-option
+                *ngFor="let severity of severityLevel"
+                [value]="severity.id"
+                >{{severity.name}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label>Select Date</ion-label>
+            <ion-datetime-button datetime="datetime"></ion-datetime-button>
+
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime
+                formControlName="date"
+
+                  (ionChange)="dateChanged($event)"
+                  id="datetime"
+                ></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label  for="report"
+              >Incident Report</ion-label
+            >
+          </ion-item>
+
+          <ion-item>
+            <ion-textarea formControlName="incident_report" id="report" class="custom-textarea"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item lines="none">
+            <ion-label>Affected Area(s)</ion-label>
+          </ion-item>
+          <ion-item>
+            <input
+              id="address"
+              formControlName="affected_areas"
+              (ionChange)="nullChecker($event)"
+              class="search"
+              ngx-google-places-autocomplete
+              #placesRef="ngx-places"
+              (onAddressChange)="handleAddressChange($event)"
+            />
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item lines="none">
+            <ion-list>
+              <ion-label *ngFor="let area of affectedAreas">{{area}}</ion-label>
+            </ion-list>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </form>
+  </ion-card>
+

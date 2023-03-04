@@ -3,7 +3,13 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { User } from '../interfaces/user';
 import { OrdersService } from '../services/orders.service';
 import { OrderStatus } from '../interfaces/order-status';
-import { Order } from '../interfaces/order';
+import { OverlayEventDetail } from '@ionic/core/components';
+import {
+  AlertController,
+  IonModal,
+  LoadingController,
+  ToastController,
+} from '@ionic/angular';
 
 @Component({
   selector: 'app-order-status',
@@ -12,55 +18,274 @@ import { Order } from '../interfaces/order';
 })
 export class OrderStatusPage implements OnInit, OnDestroy {
   user!: User;
-  selectedOrder!: Order;
+  orderSelected!: boolean;
+
   users: User[] = [];
   isOpen!: boolean;
   orderSub!: Subscription;
-  orders: Order[] = [];
-  orderType: OrderStatus = {
-    order_type: '',
+  orders: OrderStatus[] = [];
+  orderStatus: OrderStatus = {
+    order_type: 0,
     order_number: '',
+    order_status: 0,
+    product: 0,
+    creation_date: 0,
+    location_id: 0,
+    client_name: '',
+    client_surname: '',
+    client_email: '',
+    contact_number: '',
+    isp_reference: '',
+    organization_id: 0,
+    network_id: '',
+    location_type:''
   };
+  selectedOrder: OrderStatus = {
+    order_type: 0,
+    order_number: '',
+    order_status: 0,
+    product: 0,
+    creation_date: 0,
+    location_id: 0,
+    client_name: '',
+    client_surname: '',
+    client_email: '',
+    contact_number: '',
+    isp_reference: '',
+    organization_id: 0,
+    network_id: '',
+    location_type:''
+  };
+  rejectable = false;
   @ViewChild('popover') popover: any;
+  @ViewChild(IonModal) modal!: IonModal;
+  name!: string;
+  orderLoaded!: boolean;
 
-  constructor(private orderService: OrdersService) {}
+  constructor(
+    private orderService: OrdersService,
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
+  ) {}
   ngOnDestroy(): void {
+    this.orders = [];
+    this.users = [];
+    this.orderStatus = {
+      order_type: 0,
+      order_number: '',
+      order_status: 0,
+      product: 0,
+      creation_date: 0,
+      location_id: 0,
+      client_name: '',
+      client_surname: '',
+      client_email: '',
+      contact_number: '',
+      isp_reference: '',
+      organization_id: 0,
+      network_id: ''
+      ,location_type:''
+    };
+    this.selectedOrder = {
+      order_type: 0,
+      order_number: '',
+      order_status: 0,
+      product: 0,
+      creation_date: 0,
+      location_id: 0,
+      client_name: '',
+      client_surname: '',
+      client_email: '',
+      contact_number: '',
+      isp_reference: '',
+      organization_id: 0,
+      network_id: '',
+      location_type:''
+    };
     if (this.orderSub) {
       this.orderSub.unsubscribe();
     }
   }
 
-  ngOnInit() {}
-  search(event: any) {
-    this.orderType.order_number = event.detail.value;
-    this.orderType.order_type = event.detail.value.slice(0, 3);
-    this.orderSub = this.orderService.orderStatus(this.orderType).subscribe({
-      next: (data) => {
-        console.log('Data has ', data);
-        this.orders = data;
-      },
-      error: (error) => {
-        console.log(error);
-      },
+  async presentLoader() {
+    const loader = await this.loadingCtrl.create({
+      message: 'Busy....',
     });
-    console.log('Order type ', this.orderType.order_type);
-  }
-  clearSearch(event: any) {}
-  fetchRoleNames(role: string) {}
-  fetchOrderStatus(order_status: string) {
-    return Status[parseInt(order_status)];
-  }
-  fetchProducts(product: string) {
-    return Products[parseInt(product)];
+    return await loader.present();
   }
 
-  presentPopover(event: any, order: Order) {
-   this.selectedOrder = order;
+  ngOnInit() {
+    this.presentLoader().then(() => {
+      this.loadingCtrl.dismiss();
+    });
+  }
+  // onWillDismiss(event: Event) {
+  //   const ev = event as CustomEvent<OverlayEventDetail<string>>;
+  //   if (ev.detail.role === 'confirm') {
+  //   }
+  // }
+
+  async findOrder(order: OrderStatus) {
+    this.orderSub = this.orderService.orderStatus(order).subscribe({
+      next: (data) => {
+        if (data?.length >0 && data != null) {
+          this.orders = data;
+        } else {
+          this.clearData();
+        }
+      },
+      error: (error) => {
+      },
+      complete: () => {},
+    });
+  }
+  search(event: any) {
+    if (event.detail.value == '') {
+      this.orderSelected = false;
+    }
+    this.orderStatus.order_number = event.detail.value;
+    this.orderStatus.order_type = event.detail.value.slice(0, 3);
+    this.findOrder(this.orderStatus);
+  }
+  clearSearch(event: any) {
+    this.orderLoaded = false;
+    if (event.detail.value === '') {
+      this.orderSelected = false;
+      this.orders = [];
+    }
+    this.orderSelected = false;
+    this.selectedOrder = {
+      order_type: 0,
+      order_number: '',
+      order_status: 0,
+      product: 0,
+      creation_date: 0,
+      location_id: 0,
+      client_name: '',
+      client_surname: '',
+      client_email: '',
+      contact_number: '',
+      isp_reference: '',
+      organization_id: 0,
+      network_id: '',
+      location_type:''
+    };
+    this.orders = [];
+    this.orderLoaded = false;
+  }
+  fetchRoleNames(role: string) {}
+  fetchOrderStatus(order_status: number) {
+    return Status[order_status];
+  }
+  fetchProducts(product: number) {
+    return Products[product];
+  }
+
+  presentPopover(event: any, order: OrderStatus) {
+    this.selectedOrder = order;
     this.popover.event = event;
     this.isOpen = true;
   }
-  viewOrder(order: Order) {
+  viewOrder(order: OrderStatus) {
+    this.orderSelected = true;
+    this.selectedOrder = order;
+    this.rejectable = this.selectedOrder.order_status > 1 ? false : true;
+  }
+  rejectOrder(selectedOrder: OrderStatus) {
+    this.presentRejectAlert().then(() => {
+      // Present toast confirmation of rejection
+    });
+  }
 
+  async presentToast(_message: string, _header: string) {
+    const toast = this.toastCtrl.create({
+      header: _header,
+      duration: 2000,
+      message: _message,
+      position: 'middle',
+    });
+    return await (await toast).present();
+  }
+
+  async presentRejectAlert() {
+    const alert = this.alertCtrl.create({
+      header: 'Cancel Order',
+      message: 'Are you sure you want to reject the order?',
+      buttons: [
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.presentLoader().then(() => {
+              this.orderService
+                .rejectOrder(this.selectedOrder.order_number)
+                .subscribe({
+                  next: (data) => {
+                    this.loadingCtrl.dismiss();
+                    switch (data) {
+                      case true:
+                        this.presentToast(
+                          'Order has been rejected',
+                          'Success!'
+                        ).then(() => {
+                          this.clearData();
+                        });
+                        break;
+
+                      default:
+                        break;
+                    }
+                  },
+                });
+            });
+          },
+          role: 'ok',
+        },
+        { text: 'Cancel', handler: () => {}, role: 'cancel' },
+      ],
+    });
+    return await (await alert).present();
+  }
+
+  clearData() {
+    this.orders = [];
+    this.users = [];
+    this.orderStatus = {
+      order_type: 0,
+      order_number: '',
+      order_status: 0,
+      product: 0,
+      creation_date: 0,
+      location_id: 0,
+      client_name: '',
+      client_surname: '',
+      client_email: '',
+      contact_number: '',
+      isp_reference: '',
+      organization_id: 0,
+      network_id: '',
+      location_type:''
+    };
+    this.orderLoaded = false;
+    this.orderSelected = false;
+    this.isOpen = false;
+
+    this.selectedOrder = {
+      order_type: 0,
+      order_number: '',
+      order_status: 0,
+      product: 0,
+      creation_date: 0,
+      location_id: 0,
+      client_name: '',
+      client_surname: '',
+      client_email: '',
+      contact_number: '',
+      isp_reference: '',
+      organization_id: 0,
+      network_id: '',
+      location_type:''
+    };
   }
 }
 enum Status {

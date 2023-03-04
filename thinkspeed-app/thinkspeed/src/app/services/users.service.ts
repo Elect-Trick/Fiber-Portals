@@ -24,4 +24,12 @@ export class UsersService {
 
   }
 
+  countUsers():Observable<any>{
+    return this.http.get<any>(`${this.baseURL}thinkspeed.php?count-users`);
+  }
+  getPaginatedUsers(page:number){
+    return this.http.get<any>(`${this.baseURL}thinkspeed.php?paginated-users=${page}`);
+
+  }
+
 }

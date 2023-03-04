@@ -1,6 +1,6 @@
 .heading-img{
     transform: scale(0.5);
-    margin-left: 50%;
+    // margin-left: 50%;
 
   }
 .table:hover{
@@ -29,4 +29,38 @@
 }
 .form-toolbar{
   padding: 0;
+}
+.users-table{
+  height: 500px;
+  overflow: scroll;
+
+}
+.pager{
+  display: flex;
+  position: relative;
+  margin-left: 45%;
+  margin-top: -2%;
+}
+li{
+  list-style-type: none;
+  padding-right:2%;
+}
+li{
+
+  width: 30px;
+
+}
+a{
+  font-size: 20px;
+  width: 30px;
+
+}
+a:hover{
+  // font-size: 29px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid green;
+  color: red;
+  background: #000 !important;
+
 }

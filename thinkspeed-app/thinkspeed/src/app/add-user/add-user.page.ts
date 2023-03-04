@@ -1,6 +1,13 @@
 import { HttpResponse } from '@capacitor/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoginService } from 'src/login.service';
 import { UserRoles } from '../interfaces/user-roles';
@@ -9,12 +16,15 @@ import { UsersService } from '../services/users.service';
 import { ToastController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 import { PasswordValidator } from '../Validators/passwordValidator';
+import { ENUMS } from '../Helpers/globalEnums';
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.page.html',
   styleUrls: ['./add-user.page.scss'],
 })
-export class AddUserPage implements OnInit, OnDestroy {
+export class AddUserPage
+  implements OnInit, OnDestroy, AfterViewInit, AfterViewInit
+{
   public userRoles: UserRoles[] = [];
   roleSub!: Subscription;
   orgSub!: Subscription;
@@ -29,45 +39,60 @@ export class AddUserPage implements OnInit, OnDestroy {
     public loginService: LoginService,
     private usersService: UsersService
   ) {
-    this.userDetails = new FormGroup(
-      {
-        account_name: new FormControl('', [
-          Validators.required,
-          Validators.minLength(5),
-        ]),
-        password: new FormControl('', [
-          Validators.required,
-          Validators.minLength(6),
-          PasswordValidator.passwordMatchingValidatior,
-        ]),
-        verify_password: new FormControl('', [
-          Validators.required,
-          Validators.minLength(6),
-        ]),
-        e_mail: new FormControl('', [
-          Validators.required,
-          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
-        ]),
-        organization: new FormControl('', [Validators.required]),
-        user_role: new FormControl('', [Validators.required]),
-      },
-      PasswordValidator.passwordMatchingValidatior
-    );
+
+      this.userDetails = new FormGroup(
+        {
+          account_name: new FormControl('', [
+            Validators.required,
+            Validators.minLength(5),
+          ]),
+          password: new FormControl('', [
+            Validators.required,
+            Validators.minLength(6),
+            PasswordValidator.passwordMatchingValidatior,
+          ]),
+          verify_password: new FormControl('', [
+            Validators.required,
+            Validators.minLength(6),
+          ]),
+          e_mail: new FormControl('', [
+            Validators.required,
+            Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+          ]),
+          organization: new FormControl('', [Validators.required]),
+          user_role: new FormControl('', [Validators.required]),
+        },
+        PasswordValidator.passwordMatchingValidatior
+      );
+
+
+
+  }
+  ngAfterViewInit(): void {
   }
 
   ngOnInit() {
-    this.roleSub = this.loginService.getAllUserRoles().subscribe((response) => {
-      this.userRoles = response;
-    });
 
-    this.orgSub = this.loginService.getOrginzations().subscribe((response) => {
-      this.organizations = response;
+    this.presentLoader().then(() => {
+      this.roleSub = this.loginService
+        .getAllUserRoles()
+        .subscribe((response) => {
+          this.userRoles = response;
+        });
+
+      this.orgSub = this.loginService
+        .getOrginzations()
+        .subscribe((response) => {
+          this.organizations = response;
+        });
+
+      this.loadingCtrl.dismiss();
     });
   }
 
   async presentLoader() {
     const loader = await this.loadingCtrl.create({
-      message: 'Adding user... Please wait',
+      message: 'Busy....',
     });
     return await loader.present();
   }
@@ -140,11 +165,9 @@ export class AddUserPage implements OnInit, OnDestroy {
   }
 
   fetchISPimage(orgnization: number) {
-    return ISP[orgnization];
+    return ENUMS.GlobalEnums.fetchISPImages(orgnization);
   }
-}
-
-enum ISP {
-  'https://royalteas.co.za/resources/Afrihost.jpg' = 1,
-  'https://royalteas.co.za/resources/Mweb.jpg' = 2,
+  fetchRoleName(roleID: number) {
+    return ENUMS.GlobalEnums.fetchRoleName(roleID);
+  }
 }

@@ -1,5 +1,5 @@
 export interface LocationSearch{
-  type:string;
+  type?:string;
   searchString:string;
 
 }

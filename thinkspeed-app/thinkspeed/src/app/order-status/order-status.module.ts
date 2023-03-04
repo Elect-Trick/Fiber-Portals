@@ -1,3 +1,4 @@
+import { ViewOrderPage } from './../view-order/view-order.page';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,6 @@ import { OrderStatusPage } from './order-status.page';
     IonicModule,
     OrderStatusPageRoutingModule
   ],
-  declarations: [OrderStatusPage]
+  declarations: [OrderStatusPage,ViewOrderPage]
 })
 export class OrderStatusPageModule {}
