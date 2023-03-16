@@ -14,7 +14,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-accordion-group #accordionGroup>
+  <ion-accordion-group class="ticket-container" #accordionGroup>
     <ion-accordion [disabled]="selectedTicket.ticket_id>0" value="ticket-list">
       <ion-item class="accord-header" slot="header" color="light">
         <ion-card-title>Manage Tickets</ion-card-title>
@@ -37,7 +37,7 @@
             <!-- Open Tickets -->
             <ion-row *ngIf="type !=='closed'">
               <ion-col size="12">
-                <ion-card>
+                <ion-card class="tickets">
                   <ion-card-header class="form-toolbar">
                     <ion-toolbar>
                       <ion-grid>
@@ -174,7 +174,7 @@
             <!-- Closed Tickets -->
             <ion-row *ngIf="type !=='open'">
               <ion-col size="12">
-                <ion-card>
+                <ion-card class="tickets">
                   <ion-card-header class="form-toolbar">
                     <ion-toolbar>
                       <ion-grid>
@@ -309,7 +309,7 @@
               </ion-col>
             </ion-row>
             <ion-footer>
-              <ion-toolbar>
+              <ion-toolbar class="footer">
                 <div class="pager" *ngIf="type!=='closed'">
                   <li
                     (click)="paginatedTickets('root',item)"

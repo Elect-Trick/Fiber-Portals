@@ -1,5 +1,5 @@
 export interface SduLocation{
-  house_number:number;
+  house_number:number | string;
   street_name: string;
   surburb:string;
   postal_code:number;
@@ -8,6 +8,7 @@ export interface SduLocation{
   is_Installed: boolean;
   creation_date:string;
   type:'sdu';
+  isAdditional?:boolean;
 
 
 

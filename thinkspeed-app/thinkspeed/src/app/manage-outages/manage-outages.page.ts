@@ -172,7 +172,7 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
       this.closeSub.unsubscribe();
     }
 
-    // this.clearData();
+    this.clearData();
   }
   clearData() {
     this.selectedOutage = {
@@ -192,6 +192,8 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
     this.outageSearch = {
       searchString: '',
     };
+    this.paginationArray =[];
+
   }
   async OpenModal(isOpen: boolean) {
     this.isModalOpen = isOpen;
@@ -199,6 +201,7 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.paginatedOutages('root', 1);
+    this.type = 'open';
   }
   async presentLoader() {
     const loader = await this.loadingCtrl.create({
@@ -300,9 +303,9 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
   }
 
   async paginatedOutages(direction: string, page: number) {
-    this.filterBy = '';
-    this.isFiltered = false;
     this.presentLoader().then(() => {
+      this.filterBy = '';
+      this.isFiltered = false;
       switch (direction) {
         case 'root':
           this.activePage = page;
@@ -317,11 +320,15 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
                   this.preparePagination();
                 }
               },
+              complete: () => {
+                setTimeout(() => {
+                  this.loadingCtrl.dismiss();
+                }, 250);
+              },
             });
 
           break;
       }
-      this.loadingCtrl.dismiss();
     });
   }
   async fetchIncidentComments() {

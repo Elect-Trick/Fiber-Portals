@@ -72,7 +72,10 @@
 
                         <ion-col size="6">
                           <ion-row>
-                            <ion-segment  (ionChange)="toggleInstalled($event)">
+                            <ion-segment
+                              (ionChange)="toggleInstalled($event)"
+                              [(ngModel)]="sduLocation.is_Installed"
+                            >
                               <ion-segment-button value="yes">
                                 <ion-label>Yes</ion-label>
                               </ion-segment-button>
@@ -83,6 +86,7 @@
                           </ion-row>
                         </ion-col>
                       </ion-row>
+
                       <ion-row *ngIf="sduInstalled">
                         <ion-col size="6"
                           ><ion-item lines="none">
@@ -91,16 +95,59 @@
                         >
                         <ion-col size="6">
                           <ion-item>
-                            <ion-label class="item-descriptor">{{sduLocation.network_id}}</ion-label>
-                            <!-- <ion-input
+                            <!-- <ion-label class="item-descriptor">{{sduLocation.network_id}}</ion-label> -->
+                            <ion-input
                               class="fsan-input"
                               type="text"
                               placeholder="Enter Line Number"
                               [(ngModel)]="sduLocation.network_id"
-                            ></ion-input> -->
+                            ></ion-input>
                           </ion-item>
                         </ion-col>
                       </ion-row>
+                      <ion-row>
+                        <ion-col size="6">
+                          <ion-item>
+                            <ion-label>Is Additional Line ?</ion-label>
+                          </ion-item>
+                        </ion-col>
+
+                        <ion-col size="6">
+                          <ion-row>
+                            <ion-segment
+                              (ionChange)="toggleAdditionalLine($event)"
+                              [(ngModel)]="sduLocation.isAdditional"
+                            >
+                              <ion-segment-button value="yes">
+                                <ion-label>Yes</ion-label>
+                              </ion-segment-button>
+                              <ion-segment-button value="no">
+                                <ion-label>No</ion-label>
+                              </ion-segment-button>
+                            </ion-segment>
+                          </ion-row>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="isAdditional">
+                        <ion-col size="6"
+                          ><ion-item lines="none">
+                            <ion-label>Unit</ion-label>
+                          </ion-item></ion-col
+                        >
+                        <ion-col size="6">
+                          <ion-item>
+                            <!-- <ion-label class="item-descriptor">{{mduLocation.network_id}}</ion-label> -->
+
+                            <ion-input
+                              class="fsan-input"
+                              type="text"
+                              placeholder="Unit Number"
+                              [(ngModel)]="sduLocation.house_number"
+                            ></ion-input>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+
                       <ion-row>
                         <ion-col size="6"
                           ><ion-item lines="none">
@@ -108,7 +155,10 @@
                           </ion-item></ion-col
                         >
                         <ion-col size="6">
-                          <ion-label class="item-descriptor">{{sduLocation.house_number}} {{ sduLocation.street_name}}</ion-label>
+                          <ion-label class="item-descriptor"
+                            >{{sduLocation.house_number}} {{
+                            sduLocation.street_name}}</ion-label
+                          >
 
                           <!-- <ion-input
                             [disabled]="true"
@@ -126,7 +176,9 @@
                           </ion-item></ion-col
                         >
                         <ion-col size="6">
-                          <ion-label class="item-descriptor">{{sduLocation.coordinates}}</ion-label>
+                          <ion-label class="item-descriptor"
+                            >{{sduLocation.coordinates}}</ion-label
+                          >
 
                           <!-- <ion-input
                             [disabled]="true"
@@ -141,142 +193,141 @@
                 </ion-item-group>
 
                 <ion-item-group *ngIf="(type !=='sdu') &&(type !=='')">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="6">
+                        <ion-item>
+                          <ion-label>Is Installed ?</ion-label>
+                        </ion-item>
+                      </ion-col>
 
-                    <ion-grid>
-                      <ion-row>
-                        <ion-col size="6">
-                          <ion-item>
-                            <ion-label>Is Installed ?</ion-label>
-                          </ion-item>
-                        </ion-col>
+                      <ion-col size="6">
+                        <ion-row>
+                          <ion-segment (ionChange)="toggleInstalled($event)">
+                            <ion-segment-button value="yes">
+                              <ion-label>Yes</ion-label>
+                            </ion-segment-button>
+                            <ion-segment-button value="no">
+                              <ion-label>No</ion-label>
+                            </ion-segment-button>
+                          </ion-segment>
+                        </ion-row>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="mduInstalled">
+                      <ion-col size="6"
+                        ><ion-item lines="none">
+                          <ion-label>FSAN</ion-label>
+                        </ion-item></ion-col
+                      >
+                      <ion-col size="6">
+                        <ion-item>
+                          <!-- <ion-label class="item-descriptor">{{mduLocation.network_id}}</ion-label> -->
 
-                        <ion-col size="6">
-                          <ion-row>
-                            <ion-segment  (ionChange)="toggleInstalled($event)">
-                              <ion-segment-button value="yes">
-                                <ion-label>Yes</ion-label>
-                              </ion-segment-button>
-                              <ion-segment-button value="no">
-                                <ion-label>No</ion-label>
-                              </ion-segment-button>
-                            </ion-segment>
-                          </ion-row>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row *ngIf="mduInstalled">
-                        <ion-col size="6"
-                          ><ion-item lines="none">
-                            <ion-label>FSAN</ion-label>
-                          </ion-item></ion-col
+                          <ion-input
+                            class="fsan-input"
+                            type="text"
+                            placeholder="Line Number"
+                            [(ngModel)]="mduLocation.network_id"
+                          ></ion-input>
+                        </ion-item>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="6"
+                        ><ion-item lines="none">
+                          <ion-label>Unit Number</ion-label>
+                        </ion-item></ion-col
+                      >
+                      <ion-col size="6">
+                        <ion-item>
+                          <ion-input
+                            class="fsan-input"
+                            type="text"
+                            value=""
+                            [(ngModel)]="unitNumber"
+                            placeholder="Enter Unit number"
+                          ></ion-input>
+                        </ion-item>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="6"
+                        ><ion-item lines="none">
+                          <ion-label>Building Name</ion-label>
+                        </ion-item></ion-col
+                      >
+                      <ion-col size="6">
+                        <ion-label class="item-descriptor"
+                          >{{mduLocation.building_name}}</ion-label
                         >
-                        <ion-col size="6">
-                          <ion-item>
-                            <ion-label class="item-descriptor">{{mduLocation.network_id}}</ion-label>
 
-                            <!-- <ion-input
-                              class="fsan-input"
-                              type="text"
-                              placeholder="Enter Line Number"
-                              [(ngModel)]="mduLocation.network_id"
-                            ></ion-input> -->
-                          </ion-item>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col size="6"
-                          ><ion-item lines="none">
-                            <ion-label>Unit Number</ion-label>
-                          </ion-item></ion-col
-                        >
-                        <ion-col size="6">
-
-                          <ion-item>
-                            <ion-input
-                              class="fsan-input"
-                              type="text"
-                              value=""
-                              [(ngModel)]="unitNumber"
-                              placeholder="Enter Unit number"
-                            ></ion-input>
-                          </ion-item>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col size="6"
-                          ><ion-item lines="none">
-                            <ion-label>Building Name</ion-label>
-                          </ion-item></ion-col
-                        >
-                        <ion-col size="6">
-                          <ion-label class="item-descriptor">{{mduLocation.building_name}}</ion-label>
-
-                          <!-- <ion-input
+                        <!-- <ion-input
                             [disabled]="true"
                             class="fsan-input"
                             type="text"
                             value=""
                             placeholder="{{mduLocation.building_name}}"
                           ></ion-input> -->
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col size="6"
-                          ><ion-item lines="none">
-                            <ion-label>Location</ion-label>
-                          </ion-item></ion-col
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="6"
+                        ><ion-item lines="none">
+                          <ion-label>Location</ion-label>
+                        </ion-item></ion-col
+                      >
+                      <ion-col size="6">
+                        <ion-label class="item-descriptor"
+                          >{{mduLocation.street_name}}</ion-label
                         >
-                        <ion-col size="6">
-                          <ion-label class="item-descriptor">{{mduLocation.street_name}}</ion-label>
 
-                          <!-- <ion-input
+                        <!-- <ion-input
                             [disabled]="true"
                             class="fsan-input"
                             type="text"
                             value=""
                             placeholder="{{mduLocation.street_name}}, {{mduLocation.surburb}}"
                           ></ion-input> -->
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col size="6"
-                          ><ion-item lines="none">
-                            <ion-label>Coordinates</ion-label>
-                          </ion-item></ion-col
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="6"
+                        ><ion-item lines="none">
+                          <ion-label>Coordinates</ion-label>
+                        </ion-item></ion-col
+                      >
+                      <ion-col size="6">
+                        <ion-label class="item-descriptor"
+                          >{{mduLocation.coordinates}}</ion-label
                         >
-                        <ion-col size="6">
-                          <ion-label class="item-descriptor">{{mduLocation.coordinates}}</ion-label>
 
-                          <!-- <ion-input
+                        <!-- <ion-input
                             [disabled]="true"
                             class="fsan-input"
                             type="text"
                             placeholder="{{mduLocation.coordinates}}"
                           ></ion-input> -->
-                        </ion-col>
-                      </ion-row>
-                    </ion-grid>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
                 </ion-item-group>
-
-                <ion-buttons slot="start">
+                <ion-item>
                   <ion-button
-                    (click)="addLocation()"
-                    color="primary"
                     class="add-location"
+                    (click)="addLocation()"
                     fill="full"
                   >
                     <ion-icon slot="start" name="add"></ion-icon>
                     Add Location
                   </ion-button>
-                  <ion-button
-                    (click)="clear()"
-                    color="warning"
-                    expand="block"
-                    fill="full"
-                  >
+                  <ion-button (click)="clear()" fill="full" class="cancel-btn">
                     <ion-icon slot="start" name="trash-outline"></ion-icon>
                     Cancel
                   </ion-button>
-                </ion-buttons>
+                </ion-item>
+
+                <ion-buttons slot="start"> </ion-buttons>
               </ion-card-content>
             </ion-card>
           </ion-col>

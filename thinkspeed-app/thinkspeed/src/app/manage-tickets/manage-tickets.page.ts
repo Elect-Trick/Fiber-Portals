@@ -7,7 +7,7 @@ import {
   LoadingController,
   ToastController,
 } from '@ionic/angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Ticket } from '../interfaces/ticket';
 import { ENUMS } from '../Helpers/globalEnums';
 import { Location } from '../interfaces/location';
@@ -20,7 +20,7 @@ import { Outage } from '../interfaces/outage';
   templateUrl: './manage-tickets.page.html',
   styleUrls: ['./manage-tickets.page.scss'],
 })
-export class ManageTicketsPage implements OnInit {
+export class ManageTicketsPage implements OnInit, OnDestroy {
   type = 'open';
   @ViewChild('accordionGroup', { static: true })
   accordionGroup!: IonAccordionGroup;
@@ -89,27 +89,56 @@ export class ManageTicketsPage implements OnInit {
   commentSub!: Subscription;
   tempStorage: Ticket[] = [];
   closedTempStorage: Ticket[] = [];
+  closedPagination!: Subscription;
+  ticketSub!: Subscription;
+  ticketSub2!: Subscription;
+  techSub!: Subscription;
+  openTSub!: Subscription;
+  commentSub2!: Subscription;
   constructor(
     private ticketService: ManageFaultsService,
     private loadingCtrl: LoadingController,
     private orderService: OrdersService,
     private toastCtrl: ToastController
   ) {}
+  ngOnDestroy(): void {
+    this.clearSelection();
+    this.clearAll();
+    if (this.commentSub) {
+      this.commentSub.unsubscribe();
+    }
+    if (this.closedPagination) {
+      this.closedPagination.unsubscribe();
+    }
+    if (this.ticketSub) {
+      this.ticketSub.unsubscribe();
+    }
+    if (this.ticketSub2) {
+      this.ticketSub2.unsubscribe();
+    }
+    if (this.techSub) {
+      this.techSub.unsubscribe();
+    }
+    if (this.openTSub) {
+      this.openTSub.unsubscribe();
+    }
+    if (this.commentSub2) {
+      this.commentSub2.unsubscribe();
+    }
+
+  }
 
   ngOnInit() {
-    this.presentLoader()
-      .then(() => {
+    this.presentLoader().then(() => {
+      this.paginatedTickets('root', 1).then(() => {
         this.openAccordion();
-        this.countTickets();
-        this.countClosedTickets();
-        this.paginatedTickets('root', 1);
-        this.fetchAllTickets();
-        // this.fetchClosedTickets();
-        this.fetchTechnicians();
-      })
-      .finally(() => {
-        this.loadingCtrl.dismiss();
+        this.fetchTechnicians().finally(()=>{
+          this.loadingCtrl.dismiss();
+
+        })
       });
+
+    });
   }
   async markAsResolved() {
     this.isResolved = true;
@@ -150,9 +179,9 @@ export class ManageTicketsPage implements OnInit {
           );
           this.toggleAccordion().then(() => {
             this.paginationArray = [];
-            this.countTickets();
+            this.preparePagination();
             this.paginatedTickets('root', 1);
-            this.clearData();
+            this.clearSelection();
           });
         } else {
         }
@@ -161,7 +190,7 @@ export class ManageTicketsPage implements OnInit {
   }
 
   async fetchComments(ticket: Ticket) {
-    this.ticketService.fetchComments(ticket).subscribe({
+    this.commentSub2 = this.ticketService.fetchComments(ticket).subscribe({
       next: (response) => {
         if (response) {
           this.comments = response;
@@ -190,8 +219,14 @@ export class ManageTicketsPage implements OnInit {
   segmentChanged(event: any) {
     this.type = event.detail.value;
     if (this.type == 'closed') {
-      this.PaginatedClosedTickets('root', 1);
-      this.fetchClosedTickets();
+      this.presentLoader().then(()=>{
+        if (!this.closedPagination) {
+          this.PaginatedClosedTickets('root', 1);
+        }
+        this.loadingCtrl.dismiss();
+
+      });
+
     } else {
       this.paginatedTickets('root', 1);
     }
@@ -220,41 +255,27 @@ export class ManageTicketsPage implements OnInit {
     this.selectedTech.role = event.detail.value;
   }
 
-  async countTickets() {
-    this.ticketService.countTickets().subscribe({
-      next: (response) => {
-        if (response) {
-          this.totalEntries = response;
-          let rowCount = Math.ceil(this.totalEntries / this.items_per_page);
-          // let display_row_count = Math.ceil(
-          //   this.totalEntries  / this.items_per_page
-          // );
-
-          for (let index = 1; index <= rowCount; index++) {
-            this.paginationArray.push(index);
-          }
+  async preparePagination() {
+    switch (this.type) {
+      case 'open':
+        this.paginationArray = [];
+        let rowCount = Math.ceil(this.totalEntries / this.items_per_page);
+        for (let index = 1; index <= rowCount; index++) {
+          this.paginationArray.push(index);
         }
-      },
-    });
-  }
-  async countClosedTickets() {
-    this.ticketService.countClosedTickets().subscribe({
-      next: (response) => {
-        if (response) {
-          this.closedTotalEntries = response;
-          let rowCount = Math.ceil(
-            this.closedTotalEntries / this.items_per_page
-          );
-          // let display_row_count = Math.ceil(
-          //   this.totalEntries  / this.items_per_page
-          // );
+        break;
 
-          for (let index = 1; index <= rowCount; index++) {
-            this.closedPaginationArray.push(index);
-          }
+      case 'closed':
+        this.closedPaginationArray = [];
+        let closedCount = Math.ceil(
+          this.closedTotalEntries / this.items_per_page
+        );
+
+        for (let index = 1; index <= closedCount; index++) {
+          this.closedPaginationArray.push(index);
         }
-      },
-    });
+        break;
+    }
   }
 
   async paginatedTickets(direction: string, page: number) {
@@ -265,13 +286,17 @@ export class ManageTicketsPage implements OnInit {
         case 'root':
           this.activePage = page;
 
-          this.ticketService.getPaginatedTickets(page).subscribe({
-            next: (response) => {
-              if (response) {
-                this.tickets = response;
-              }
-            },
-          });
+          this.openTSub = this.ticketService
+            .getPaginatedTickets(page)
+            .subscribe({
+              next: (response) => {
+                if (response) {
+                  this.tickets = response.tickets;
+                  this.totalEntries = response.totalEntries;
+                  this.preparePagination();
+                }
+              },
+            });
           this.loadingCtrl.dismiss();
 
           break;
@@ -285,13 +310,17 @@ export class ManageTicketsPage implements OnInit {
     this.presentLoader().then(() => {
       switch (direction) {
         case 'root':
-          this.ticketService.PaginatedClosedTickets(page).subscribe({
-            next: (response) => {
-              if (response) {
-                this.closedTickets = response;
-              }
-            },
-          });
+          this.closedPagination = this.ticketService
+            .PaginatedClosedTickets(page)
+            .subscribe({
+              next: (response) => {
+                if (response) {
+                  this.closedTickets = response.tickets;
+                  this.closedTotalEntries = response.totalEntries;
+                  this.preparePagination();
+                }
+              },
+            });
 
           break;
       }
@@ -315,7 +344,7 @@ export class ManageTicketsPage implements OnInit {
     this.presentLoader()
       .then(() => {
         this.toggleAccordion();
-        this.clearData();
+        this.clearSelection();
       })
       .finally(() => {
         this.loadingCtrl.dismiss();
@@ -347,7 +376,7 @@ export class ManageTicketsPage implements OnInit {
   }
 
   async fetchTechnicians() {
-    this.ticketService.fetchTechnicians().subscribe({
+    this.techSub = this.ticketService.fetchTechnicians().subscribe({
       next: (response) => {
         if (response) {
           this.technicians = response;
@@ -359,16 +388,18 @@ export class ManageTicketsPage implements OnInit {
   async assignTicket(event: any) {
     this.selectedTicket.technician = event.detail.value;
     console.log(this.selectedTicket.technician);
-    this.ticketService.assignTicket(this.selectedTicket).subscribe({
-      next: (response) => {
-        if (response) {
-          this.assigned = true;
-        }
-      },
-    });
+    this.ticketSub2 = this.ticketService
+      .assignTicket(this.selectedTicket)
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.assigned = true;
+          }
+        },
+      });
   }
   async fetchAllTickets(): Promise<Ticket[]> {
-    this.ticketService.fetchAllTickets().subscribe({
+    this.ticketSub = this.ticketService.fetchAllTickets().subscribe({
       next: (response) => {
         if (response) {
           console.log(response);
@@ -379,19 +410,6 @@ export class ManageTicketsPage implements OnInit {
       },
     });
     return this.tickets;
-  }
-
-  async fetchClosedTickets(): Promise<Ticket[]> {
-    this.ticketService.fetchClosedTickets().subscribe({
-      next: (response) => {
-        if (response) {
-          console.log(response.ticket);
-          this.closedTempStorage = response;
-          this.closedTickets = this.closedTempStorage;
-        }
-      },
-    });
-    return this.closedTickets;
   }
   async filterByTech() {
     this.isFiltered = true;
@@ -490,7 +508,17 @@ export class ManageTicketsPage implements OnInit {
       }
     }
   }
-  clearData() {
+  clearAll() {
+    this.tempStorage = [];
+    this.closedTempStorage = [];
+    this.comments = [];
+    this.technicians = [];
+    this.closedTickets = [];
+    this.tickets = [];
+    this.closedPaginationArray = [];
+    this.paginationArray = [];
+  }
+  clearSelection() {
     this.selectedTicket = {
       ticket_id: 0,
       ticket_reference: '',

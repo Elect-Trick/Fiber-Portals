@@ -54,7 +54,9 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
     network_id: '',
     creation_date: '',
     type: 'sdu',
+    isAdditional: false,
   };
+  isAdditional = false;
 
   LatLngLit = {
     lat: -26.0475780802915,
@@ -105,7 +107,6 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
       this.locationSub2.unsubscribe();
     }
     this.clear();
-
   }
   ngAfterViewInit(): void {}
   nullChecker(event: any) {
@@ -133,6 +134,10 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
           `${arr[sduComponents].long_name}`
         );
         this.sduLocation.coordinates = `${address.geometry.location.lat()}, ${address.geometry.location.lng()}`;
+        if(this.isAdditional){
+          this.sduLocation.house_number =  this.sduLocation.house_number;
+
+        }
         this.sduLocation.house_number = arr[0].long_name;
         this.sduLocation.street_name = `${arr[1].long_name}`;
         this.sduLocation.surburb = `${arr[2].long_name}`;
@@ -148,7 +153,6 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
         );
         this.mduLocation.coordinates = `${address.geometry.location.lat()}, ${address.geometry.location.lng()}`;
         this.mduLocation.street_name = `${mduarr[1].long_name}`;
-        console.log(this.mduLocation.street_name);
         this.mduLocation.surburb = `${mduarr[2].long_name}`;
         // this.mduLocation.unit_number = mduarr[0].long_name;
         this.mduLocation.building_name = address.name;
@@ -156,6 +160,7 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
         break;
     }
   }
+
   async presentMessageToast(_message: string, _cssClass: string) {
     const toast = await this.toastCtrl.create({
       message: _message,
@@ -171,7 +176,21 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
     });
     return await toast.present();
   }
+
+  toggleAdditionalLine(event: any) {
+    switch (event.detail.value) {
+      case 'yes':
+        this.isAdditional = true;
+
+        break;
+      case 'no':
+        this.isAdditional = false;
+        break;
+    }
+  }
   public handleAddressChange(address: any) {
+    this.clear();
+
     if (this.marker) {
       this.marker.setMap(null);
     }
@@ -322,9 +341,15 @@ export class AddLocationPage implements OnInit, AfterViewInit, OnDestroy {
       type: 'mdu',
       building_name: '',
     };
+    this.isAdditional = false;
   }
+
   ngOnInit() {
-    // this.prepareMap();
+    this.presentLoader().then(() => {
+      setTimeout(() => {
+        this.loadingCtrl.dismiss();
+      }, 250);
+    });
   }
 
   prepareMap() {

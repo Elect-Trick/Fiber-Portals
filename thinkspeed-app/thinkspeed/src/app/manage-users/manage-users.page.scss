@@ -33,13 +33,17 @@
 .users-table{
   height: 500px;
   overflow: scroll;
+  margin-left: 0;
+  margin-right: 0;
 
 }
 .pager{
   display: flex;
   position: relative;
   margin-left: 45%;
-  margin-top: -2%;
+  // margin-top: -2%;
+  align-items: center;
+
 }
 li{
   list-style-type: none;

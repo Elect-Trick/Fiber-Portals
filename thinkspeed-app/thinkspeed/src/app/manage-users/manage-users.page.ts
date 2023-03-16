@@ -61,16 +61,9 @@ export class ManageUsersPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.presentLoader().then(() => {
-      this.countUsers(0);
-      //  this.fetchUsers();
-
-      this.paginatedResults('root', 1).then(() => {
-        this.activePage = 1;
-      });
-
-      //  console.log(row_count);
-      this.loadingCtrl.dismiss();
+    this.countUsers(0);
+    this.paginatedResults('root', 1).then(() => {
+      this.activePage = 1;
     });
   }
   async fetchUsers() {
@@ -159,8 +152,12 @@ export class ManageUsersPage implements OnInit, OnDestroy {
                 this.users = response;
               }
             },
+            complete: () => {
+              setTimeout(() => {
+                this.loadingCtrl.dismiss();
+              }, 500);
+            },
           });
-          this.loadingCtrl.dismiss();
 
           break;
       }

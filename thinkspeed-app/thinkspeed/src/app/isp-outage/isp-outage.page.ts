@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  LoadingController,
+  ToastController,
+} from '@ionic/angular';
 import { ManageFaultsService } from '../services/manage-faults.service';
 import { OutageComment } from '../interfaces/outage-comment';
 import { LocationSearch } from '../interfaces/location-search';

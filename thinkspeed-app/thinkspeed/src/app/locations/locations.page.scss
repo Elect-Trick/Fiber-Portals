@@ -18,6 +18,7 @@ ion-button.log-ticket-btn {
   position: relative;
   margin-left: 45%;
   // margin-top: -2%;
+  border-radius: 4px;
 }
 a:hover {
   // font-size: 29px;
@@ -46,12 +47,30 @@ a {
 .list-item {
   --background: #d4e6f5;
   border-radius: 4px;
-
 }
-.building-row{
+.building-row {
   border-radius: 4px;
+}
+.list-item:hover,
+.complex-list:hover {
+  --background: #ffc409;
+}
+
+.mdu-list,
+.sdu-list {
+  margin-left: 0;
+  margin-right: 0;
+}
+.footer {
+  border-radius: 4px;
+  margin-top: 4px;
+}
+.search-list {
+  margin-top: -20px;
 
 }
-.list-item:hover,.complex-list:hover{
-  --background: #ffc409;
+.search-item-list:hover{
+  --background:#ffc409;
+  cursor: pointer;
+
 }

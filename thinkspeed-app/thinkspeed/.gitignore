@@ -11,7 +11,7 @@ $RECYCLE.BIN/
 
 *.log
 log.txt
-
+./
 
 /.sourcemaps
 /.versions
@@ -28,7 +28,7 @@ log.txt
 /tmp
 /out-tsc
 /bazel-out
-
+src\app\server
 # Node
 /node_modules
 npm-debug.log

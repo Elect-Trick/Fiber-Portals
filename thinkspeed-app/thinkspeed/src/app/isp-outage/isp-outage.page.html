@@ -19,8 +19,7 @@
       <ion-toolbar>
         <ion-title>Manage Network Incidents</ion-title>
       </ion-toolbar>
-      <ion-toolbar>
-      </ion-toolbar>
+      <ion-toolbar> </ion-toolbar>
     </ion-card-header>
     <ion-card-content>
       <ion-card>
@@ -89,9 +88,9 @@
                         <ion-col size="1"></ion-col>
                         <ion-col size="2.5">Incident ID</ion-col>
                         <ion-col size="2.5">Fault Description</ion-col>
-                        <ion-col size="2">Date Logged</ion-col>
+                        <ion-col size="2">Area(s) Affected</ion-col>
                         <ion-col size="2"> Status </ion-col>
-                        <ion-col size="2"> Last Updated </ion-col>
+                        <ion-col size="2"> Date Created </ion-col>
                       </ion-row>
                     </ion-grid>
                   </ion-toolbar>
@@ -131,7 +130,7 @@
                           >
                         </ion-col>
                         <ion-col size="2">
-                          <ion-label>{{outage.date}}</ion-label>
+                          <ion-label>{{outage.affected_areas}}</ion-label>
                         </ion-col>
                         <ion-col size="2">
                           <ion-label
@@ -140,7 +139,7 @@
                           >
                         </ion-col>
                         <ion-col size="2">
-                          <ion-label>{{outage.last_updated}}</ion-label>
+                          <ion-label>{{outage.date}}</ion-label>
                         </ion-col>
                       </ion-item>
                       <div (click)="$event.stopPropagation()" slot="content">
@@ -150,8 +149,6 @@
                               <ion-card-title>
                                 {{outage.outage_reference}}</ion-card-title
                               >
-
-
                             </ion-item>
                           </ion-card-header>
                           <ion-card-content class="outage-content">
@@ -177,9 +174,6 @@
                                   </ion-card-header>
                                   <ion-card-content>
                                     <ion-card class="comments-table">
-                                      <!-- <ion-item lines="none">
-                                      </ion-item> -->
-
                                       <div
                                         *ngFor="let item of comments"
                                         class="incident-update"
@@ -200,13 +194,6 @@
                       </div>
                     </ion-accordion>
                   </ion-accordion-group>
-                  <!-- <ion-row
-                    *ngFor="let index;let outage of outages"
-                    (click)="selectOutage(outage)"
-                    class="list-item"
-                  >
-
-                  </ion-row> -->
                 </ion-grid>
               </ion-list>
             </ion-col>
@@ -230,20 +217,6 @@
   </ion-footer>
   <ion-modal [isOpen]="updateModal" (ionModalDidDismiss)="triggerUpdate(false)">
     <ng-template #name>
-      <!-- <ion-header>
-        <ion-toolbar>
-          <ion-title>Add Incident Update</ion-title>
-          <ion-buttons slot="end">
-            <ion-item lines="none" color="#e9ecef">
-              <ion-button type="submit" fill="full">
-                <ion-icon slot="start" name="add"></ion-icon>
-                Create
-              </ion-button>
-            </ion-item>
-
-              </ion-buttons>
-        </ion-toolbar>
-      </ion-header> -->
       <ion-card>
         <ion-card-header class="form-toolbar">
           <ion-toolbar>
