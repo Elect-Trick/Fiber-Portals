@@ -156,6 +156,18 @@ const routes: Routes = [
         (m) => m.IspOutagePageModule
       ),
   },
+  {
+    canActivate: [LoginGuard],
+    path: 'edit-order',
+    loadChildren: () =>
+      import('./edit-order/edit-order.module').then(
+        (m) => m.EditOrderPageModule
+      ),
+  },
+  {
+    path: 'process-order',
+    loadChildren: () => import('./process-order/process-order.module').then( m => m.ProcessOrderPageModule)
+  },
 ];
 
 @NgModule({

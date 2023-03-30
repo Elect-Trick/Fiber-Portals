@@ -51,7 +51,7 @@ export class LoginService {
   fetchStats() {
     return this.http.get<any>(`${this.baseURL}thinkspeed.php?fetch-stats`);
   }
-  getStats() {
+  getStats():  Observable<any>{
     return this.http.get<any>(`${this.baseURL}thinkspeed.php?get-stats`);
   }
 }

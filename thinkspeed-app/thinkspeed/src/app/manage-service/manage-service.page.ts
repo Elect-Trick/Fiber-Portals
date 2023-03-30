@@ -103,7 +103,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
     order_number: '',
   };
   selectedLocation: Location = {
-    location_id: '',
+    location_id: 0,
     location_string: '',
   };
   isSelected = false;
@@ -240,7 +240,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
   clearSearch(event: any) {
     this.locations = [];
     this.selectedLocation = {
-      location_id: '',
+      location_id: 0,
       location_string: '',
     };
     this.found = false;
@@ -254,7 +254,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
 
       this.found = false;
       //Searching for a service using the location_id, i need to add a check for fsan check
-      this.serviceObject.searchString = this.selectedLocation.location_id;
+      this.serviceObject.searchString = this.selectedLocation.location_id.toString();
       this.serviceSub2 = this.service
         .findService(this.serviceObject)
         .subscribe({
@@ -658,7 +658,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
       organization_id:0,
       technician:''
     };
-    this.selectedLocation = { location_id: '', location_string: '' };
+    this.selectedLocation = { location_id: 0, location_string: '' };
     this.serviceObject = { searchString: '', searchType: 0, locationType: '' };
     this.history = [];
     this.products = [];

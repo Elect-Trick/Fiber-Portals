@@ -5,16 +5,1335 @@
         <ion-menu-button></ion-menu-button>
         <ion-col sizeXs="8.5" sizeMd="6" offsetMd="3.5">
           <img
-          class="heading-img"
-          src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
-        />
+            class="heading-img"
+            src="https://assets-global.website-files.com/5d6513339093d78653c57dc3/5d6525f9437276d13240998e_CA_Logo.png"
+          />
         </ion-col>
-
       </ion-buttons>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header class="form-toolbar">
+            <ion-toolbar>
+              <ion-card-title>Manage Orders</ion-card-title>
+            </ion-toolbar>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-segment value="pending" (ionChange)="segmentChanged($event)">
+              <ion-segment-button value="pending">
+                <ion-label>Pending Orders</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="active">
+                <ion-label>Active Orders</ion-label> </ion-segment-button
+              ><ion-segment-button value="awaiting_install">
+                <ion-label>Awaiting Installation</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+            <ion-row>
+              <ion-col size="12">
+                <ion-searchbar
+                  placeholder="Search for Order"
+                  inputmode="decimal"
+                  type="decimal"
+                  (ionChange)="onSearchChange($event)"
+                  [debounce]="250"
+                  showCancelButton="always"
+                ></ion-searchbar>
+              </ion-col>
+            </ion-row>
 
+            <ion-row *ngIf="type==='pending'">
+              <ion-col size="12">
+                <ion-card>
+                  <ion-card-header class="form-toolbar">
+                    <ion-toolbar>
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col size="2">
+                            <ion-item class="order-buttons">
+                              <ion-label>Filter</ion-label>
+                              <ion-select
+                                multiple="false"
+                                placeholder="Filter By"
+                              >
+                                <ion-select-option value="sdu"
+                                  >SDU</ion-select-option
+                                >
+                                <ion-select-option value="mdu"
+                                  >MDU</ion-select-option
+                                >
+                              </ion-select>
+                            </ion-item>
+                          </ion-col>
+                          <ion-col offset="0.5" size="2"
+                            ><ion-label>Order Number</ion-label></ion-col
+                          >
+                          <ion-col size="2"
+                            ><ion-label>Order Type</ion-label></ion-col
+                          >
+                          <ion-col size="2"
+                            ><ion-label>Technician</ion-label></ion-col
+                          >
+                          <ion-col size="3"
+                            ><ion-label>Date Ordered</ion-label></ion-col
+                          >
+                        </ion-row>
+                      </ion-grid>
+                    </ion-toolbar>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="12">
+                          <ion-accordion-group
+                            [animated]="true"
+                            (ionChange)="selectOrder($event)"
+                          >
+                            <ion-item *ngFor="let order of orders">
+                              <ion-accordion
+                                (click)="$event.stopPropagation()"
+                                [value]="order.order_number"
+                              >
+                                <ion-item class="order-list-item" slot="header">
+                                  <ion-grid>
+                                    <ion-row>
+                                      <ion-col size="2">
+                                        <ion-label
+                                          ><ion-item lines="none">
+                                            <ion-icon
+                                              slot="start"
+                                              name="receipt"
+                                            ></ion-icon> </ion-item
+                                        ></ion-label>
+                                      </ion-col>
+                                      <ion-col offset="0.5" size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.order_number}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{fetchOrderTypes(order.order_type)}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.technician_id}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col offset="0.4" size="3">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.creation_date}}</ion-label
+                                        >
+                                      </ion-col>
+                                    </ion-row>
+                                  </ion-grid>
+                                </ion-item>
+                                <div
+                                  class="ion-padding order-content"
+                                  slot="content"
+                                >
+                                  <ion-grid>
+                                    <ion-row>
+                                      <ion-col size="12">
+                                        <ion-toolbar>
+                                          <ion-item
+                                            lines="none"
+                                            class="order-buttons"
+                                          >
+                                            <ion-button
+                                              *ngIf="order.order_type<2"
+                                              expand="block"
+                                              fill="full"
+                                              shape="square"
+                                              class="process-order-btn"
+                                              (click)="processOrder(selectedOrder)"
+                                            >
+                                              <ion-icon
+                                                slot="start"
+                                                name="build-outline"
+                                              ></ion-icon>
+                                              Process Order
+                                            </ion-button>
+                                            <ion-button
+                                              *ngIf="order.order_type >1"
+                                              expand="block"
+                                              fill="full"
+                                              shape="square"
+                                            >
+                                              <ion-icon
+                                                slot="start"
+                                                name="checkmark-circle-outline"
+                                              ></ion-icon>
+                                              Activate Order </ion-button
+                                            ><ion-button
+                                              expand="block"
+                                              fill="full"
+                                              shape="square"
+                                              class="edit-order-btn"
+                                              (click)="setOpen(true)"
+                                            >
+                                              <ion-icon
+                                                slot="start"
+                                                name="pencil-outline"
+                                              ></ion-icon>
+                                              Edit Order </ion-button
+                                            ><ion-button
+                                              class="terminate-order-btn"
+                                              expand="block"
+                                              fill="full"
+                                              shape="square"
+                                              (click)="terminateOrder(order)"
+                                            >
+                                              <ion-icon
+                                                slot="start"
+                                                name="close-circle-outline"
+                                              ></ion-icon>
+
+                                              Terminate Order
+                                            </ion-button>
+                                          </ion-item>
+                                          <ion-row>
+                                            <!-- <ion-modal
+                                              (willDismiss)="setOpen(false)"
+                                              [isOpen]="modalOpen"
+                                            >
+                                              <ng-template #name>
+                                                <app-edit-order></app-edit-order>
+                                              </ng-template>
+                                            </ion-modal> -->
+                                            <ion-col size="4">
+                                              <ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title
+                                                      >Client Details</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="6">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Name</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_name}}</ion-label
+                                                          >
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Surname</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_surname}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Contact</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.contact_number}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Email</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_email}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card>
+                                            </ion-col>
+                                            <ion-col size="4">
+                                              <ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-row>
+                                                      <ion-col size="10">
+                                                        <ion-item
+                                                        lines="none"
+                                                          class="card-toolbar"
+                                                        >
+                                                          <ion-title
+                                                            >Order Details
+                                                            -{{order.order_number}}</ion-title
+                                                          >
+                                                        </ion-item>
+                                                      </ion-col>
+                                                      <ion-col size="2">
+                                                        <ion-item
+                                                          class="card-toolbar"
+                                                          lines="none"
+                                                        >
+
+                                                          <ion-icon
+                                                          (click)="copy(selectedOrder.order_number)"
+                                                            slot="start"
+                                                            name="copy"
+                                                            class="copy-icon"
+                                                          ></ion-icon>
+
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="12">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Location</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{selectedLocation.location_string}}
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Location
+                                                          Type</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.location_type.toUpperCase()}}
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                      <ion-col size="5">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order Status
+                                                        </ion-label>
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            class="pending-order-label"
+                                                            >{{order.order_status
+                                                            | orderStatus}}
+                                                          </ion-label>
+                                                          <ion-icon
+                                                            class="pending-order-label"
+                                                            name="information-circle-outline"
+                                                          ></ion-icon>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order Type</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchOrderTypes(order.order_type)}}
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="5"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Network ID</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.network_id}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >ISP</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchISPs(order.organization_id)}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="5"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >ISP Ref</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.isp_reference.toUpperCase()}}
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Speed
+                                                          Profile</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchProductName(order.product)}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card>
+                                            </ion-col>
+                                            <ion-col size="4"
+                                              ><ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title>
+                                                      Technician
+                                                      Details</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="6">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Assigned
+                                                          Tech</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >Njabulo Majenje
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Contact</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >078 447 5902
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Scheduled
+                                                          Date/Time</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.scheduled_date}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order
+                                                          Fullfilled</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.order_fullfilled
+                                                            |
+                                                            tinyint}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card></ion-col
+                                            >
+                                          </ion-row>
+                                        </ion-toolbar>
+                                      </ion-col>
+                                    </ion-row>
+                                  </ion-grid>
+                                </div>
+                              </ion-accordion>
+                            </ion-item>
+                          </ion-accordion-group>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+            <!-- Pending Orders Section -->
+            <ion-row *ngIf="type ==='active'"
+              >,
+              <ion-col size="12">
+                <ion-card>
+                  <ion-card-header class="form-toolbar">
+                    <ion-toolbar>
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col size="2">
+                            <ion-item class="order-buttons">
+                              <ion-label>Filter</ion-label>
+                              <ion-select
+                                multiple="false"
+                                placeholder="Filter By"
+                              >
+                                <ion-select-option value="sdu"
+                                  >SDU</ion-select-option
+                                >
+                                <ion-select-option value="mdu"
+                                  >MDU</ion-select-option
+                                >
+                              </ion-select>
+                            </ion-item>
+                          </ion-col>
+                          <ion-col offset="0.5" size="2"
+                            ><ion-label>Order Number</ion-label></ion-col
+                          >
+                          <ion-col size="2"
+                            ><ion-label>Order Type</ion-label></ion-col
+                          >
+                          <ion-col size="2"
+                            ><ion-label>Technician</ion-label></ion-col
+                          >
+                          <ion-col size="3"
+                            ><ion-label>Date Ordered</ion-label></ion-col
+                          >
+                        </ion-row>
+                      </ion-grid>
+                    </ion-toolbar>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="12">
+                          <ion-accordion-group
+                            [animated]="true"
+                            (ionChange)="selectOrder($event)"
+                          >
+                            <ion-item *ngFor="let order of orders">
+                              <ion-accordion
+                                (click)="$event.stopPropagation()"
+                                [value]="order.order_number"
+                              >
+                                <ion-item class="order-list-item" slot="header">
+                                  <ion-grid>
+                                    <ion-row>
+                                      <ion-col size="2">
+                                        <ion-label
+                                          ><ion-item lines="none">
+                                            <ion-icon
+                                              slot="start"
+                                              name="receipt"
+                                            ></ion-icon> </ion-item
+                                        ></ion-label>
+                                      </ion-col>
+                                      <ion-col offset="0.5" size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.order_number}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{fetchOrderTypes(order.order_type)}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.technician_id ||
+                                          "Unassigned"}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col offset="0.4" size="3">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.creation_date}}</ion-label
+                                        >
+                                      </ion-col>
+                                    </ion-row>
+                                  </ion-grid>
+                                </ion-item>
+                                <div
+                                  class="ion-padding order-content"
+                                  slot="content"
+                                >
+                                  <ion-grid>
+                                    <ion-row>
+                                      <ion-col size="12">
+                                        <ion-toolbar>
+                                          <ion-item
+                                            lines="none"
+                                            class="order-buttons"
+                                          >
+                                            <ion-button
+                                              class="terminate-order-btn"
+                                              expand="block"
+                                              fill="full"
+                                              shape="square"
+                                              (click)="terminateOrder(order)"
+                                            >
+                                              <ion-icon
+                                                slot="start"
+                                                name="close-circle-outline"
+                                              ></ion-icon>
+                                              Terminate Order
+                                            </ion-button>
+                                          </ion-item>
+                                          <ion-row>
+                                            <ion-col size="4">
+                                              <ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title
+                                                      >Client Details</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="6">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Name</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_name}}</ion-label
+                                                          >
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Surname</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_surname}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Contact</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.contact_number}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Email</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_email}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card>
+                                            </ion-col>
+                                            <ion-col size="4">
+                                              <ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title
+                                                      >Order Details
+                                                      -{{order.order_number}}</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="12">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Location</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{selectedLocation.location_string}}
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Location
+                                                          Type</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.location_type.toUpperCase()}}
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                      <ion-col size="5">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order Status
+                                                        </ion-label>
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            class="active-order-label"
+                                                            >{{order.order_status
+                                                            | orderStatus}}
+                                                          </ion-label>
+                                                          <ion-icon
+                                                            class="active-order-label"
+                                                            slot="end"
+                                                            name="information-circle-outline"
+                                                          ></ion-icon>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order Type</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchOrderTypes(order.order_type)}}
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="5"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Network ID</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.network_id}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >ISP</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchISPs(order.organization_id)}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="5"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >ISP Ref</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.isp_reference.toUpperCase()}}
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Speed
+                                                          Profile</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchProductName(order.product)}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card>
+                                            </ion-col>
+                                            <ion-col size="4"
+                                              ><ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title>
+                                                      Technician
+                                                      Details</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="6">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Assigned
+                                                          Tech</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >Njabulo Majenje
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Contact</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >078 447 5902
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Scheduled
+                                                          Date/Time</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.scheduled_date}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order
+                                                          Fullfilled</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.order_fullfilled
+                                                            |
+                                                            tinyint}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card></ion-col
+                                            >
+                                          </ion-row>
+                                        </ion-toolbar>
+                                      </ion-col>
+                                    </ion-row>
+                                  </ion-grid>
+                                </div>
+                              </ion-accordion>
+                            </ion-item>
+                          </ion-accordion-group>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="type ==='awaiting_install'"
+              >,
+              <ion-col size="12">
+                <ion-card>
+                  <ion-card-header class="form-toolbar">
+                    <ion-toolbar>
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col size="2">
+                            <ion-item class="order-buttons">
+                              <ion-label>Filter</ion-label>
+                              <ion-select
+                                multiple="false"
+                                placeholder="Filter By"
+                              >
+                                <ion-select-option value="sdu"
+                                  >SDU</ion-select-option
+                                >
+                                <ion-select-option value="mdu"
+                                  >MDU</ion-select-option
+                                >
+                              </ion-select>
+                            </ion-item>
+                          </ion-col>
+                          <ion-col offset="0.5" size="2"
+                            ><ion-label>Order Number</ion-label></ion-col
+                          >
+                          <ion-col size="2"
+                            ><ion-label>Order Type</ion-label></ion-col
+                          >
+                          <ion-col size="2"
+                            ><ion-label>Technician</ion-label></ion-col
+                          >
+                          <ion-col size="3"
+                            ><ion-label>Date Ordered</ion-label></ion-col
+                          >
+                        </ion-row>
+                      </ion-grid>
+                    </ion-toolbar>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="12">
+                          <ion-accordion-group
+                            [animated]="true"
+                            (ionChange)="selectOrder($event)"
+                          >
+                            <ion-item *ngFor="let order of orders">
+                              <ion-accordion
+                                (click)="$event.stopPropagation()"
+                                [value]="order.order_number"
+                              >
+                                <ion-item class="order-list-item" slot="header">
+                                  <ion-grid>
+                                    <ion-row>
+                                      <ion-col size="2">
+                                        <ion-label
+                                          ><ion-item lines="none">
+                                            <ion-icon
+                                              slot="start"
+                                              name="receipt"
+                                            ></ion-icon> </ion-item
+                                        ></ion-label>
+                                      </ion-col>
+                                      <ion-col offset="0.5" size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.order_number}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{fetchOrderTypes(order.order_type)}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col size="2">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.technician_id}}</ion-label
+                                        >
+                                      </ion-col>
+                                      <ion-col offset="0.4" size="3">
+                                        <ion-label class="item-descriptor"
+                                          >{{order.creation_date}}</ion-label
+                                        >
+                                      </ion-col>
+                                    </ion-row>
+                                  </ion-grid>
+                                </ion-item>
+                                <div
+                                  class="ion-padding order-content"
+                                  slot="content"
+                                >
+                                  <ion-grid>
+                                    <ion-row>
+                                      <ion-col size="12">
+                                        <ion-toolbar>
+                                          <ion-item
+                                            lines="none"
+                                            class="order-buttons"
+                                          >
+                                            <ion-button
+                                              class="terminate-order-btn"
+                                              expand="block"
+                                              fill="full"
+                                              shape="square"
+                                              (click)="terminateOrder(order)"
+                                            >
+                                              <ion-icon
+                                                slot="start"
+                                                name="close-circle-outline"
+                                              ></ion-icon>
+                                              Terminate Order
+                                            </ion-button>
+                                          </ion-item>
+                                          <ion-row>
+                                            <ion-col size="4">
+                                              <ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title
+                                                      >Client Details</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="6">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Name</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_name}}</ion-label
+                                                          >
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Surname</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_surname}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Contact</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.contact_number}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Email</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.client_email}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card>
+                                            </ion-col>
+                                            <ion-col size="4">
+                                              <ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title
+                                                      >Order Details
+                                                      -{{order.order_number}}</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="12">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Location</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{selectedLocation.location_string}}
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Location
+                                                          Type</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.location_type.toUpperCase()}}
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                      <ion-col size="5">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order Status
+                                                        </ion-label>
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            class="awaiting-install-label"
+                                                            >{{order.order_status
+                                                            | orderStatus}}
+                                                          </ion-label>
+                                                          <ion-icon
+                                                            class="awaiting-install-label"
+                                                            slot="end"
+                                                            name="information-circle-outline"
+                                                          ></ion-icon>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order Type</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchOrderTypes(order.order_type)}}
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="5"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Network ID</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.network_id}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="7"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >ISP</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchISPs(order.organization_id)}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="5"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >ISP Ref</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.isp_reference.toUpperCase()}}
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Speed
+                                                          Profile</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{fetchProductName(order.product)}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card>
+                                            </ion-col>
+                                            <ion-col size="4"
+                                              ><ion-card>
+                                                <ion-card-header
+                                                  class="form-toolbar"
+                                                >
+                                                  <ion-toolbar
+                                                    class="card-toolbar"
+                                                  >
+                                                    <ion-title>
+                                                      Technician
+                                                      Details</ion-title
+                                                    >
+                                                  </ion-toolbar>
+                                                </ion-card-header>
+                                                <ion-card-content>
+                                                  <ion-grid>
+                                                    <ion-row>
+                                                      <ion-col size="6">
+                                                        <ion-label
+                                                          class="client-item-descriptor"
+                                                          >Assigned
+                                                          Tech</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >Njabulo Majenje
+                                                          </ion-label>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Contact</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >078 447 5902
+                                                          </ion-label>
+                                                        </ion-item></ion-col
+                                                      >
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Scheduled
+                                                          Date/Time</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.scheduled_date}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                    <ion-row>
+                                                      <ion-col size="6"
+                                                        ><ion-label
+                                                          class="client-item-descriptor"
+                                                          >Order
+                                                          Fullfilled</ion-label
+                                                        >
+                                                        <ion-item lines="none">
+                                                          <ion-label
+                                                            >{{order.order_fullfilled
+                                                            |
+                                                            tinyint}}</ion-label
+                                                          >
+                                                        </ion-item></ion-col
+                                                      >
+                                                    </ion-row>
+                                                  </ion-grid>
+                                                </ion-card-content>
+                                              </ion-card></ion-col
+                                            >
+                                          </ion-row>
+                                        </ion-toolbar>
+                                      </ion-col>
+                                    </ion-row>
+                                  </ion-grid>
+                                </div>
+                              </ion-accordion>
+                            </ion-item>
+                          </ion-accordion-group>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

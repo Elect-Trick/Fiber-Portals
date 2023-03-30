@@ -1,3 +1,5 @@
+import { IonDatetime } from "@ionic/angular";
+
 export interface OrderStatus {
   order_type: number;
   order_number: string;
@@ -13,4 +15,8 @@ export interface OrderStatus {
   organization_id: number;
   network_id: string;
   location_type: string;
+  technician_id?:number;
+  order_fullfilled?:number;
+  scheduled_date?:IonDatetime;
+
 }

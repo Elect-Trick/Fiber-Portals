@@ -46,7 +46,7 @@ export module ENUMS {
 }
 enum OrderStatus {
   'Pending' = 1,
-  'Awaiting Activation' = 2,
+  'Awaiting Installation' = 2,
   'Cancelled' = 3,
   'Active' = 4,
 }

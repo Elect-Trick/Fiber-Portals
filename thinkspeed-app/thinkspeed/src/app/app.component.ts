@@ -2,7 +2,7 @@ import { LoginService } from 'src/login.service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-root',
@@ -14,14 +14,15 @@ export class AppComponent implements OnInit {
   userInactive: Subject<any> = new Subject();
   public userRole = 0;
   public userRole2 = 0;
+  opened = false;
   public ispPages = [
     {
       title: 'Orders',
       url: '',
       icon: 'receipt',
       subMenu: [
-        { title: 'Order Status', icon: 'timer', url: 'order-status' },
-        { title: 'New Order', icon: 'location', url: 'place-order' },
+        { title: 'Order Status', icon: 'timer', url: 'order-status'},
+        { title: 'New Order', icon: 'location', url: 'place-order'},
       ],
     },
     {
@@ -42,10 +43,7 @@ export class AppComponent implements OnInit {
       title: 'Network Incidents',
       url: '',
       icon: 'alert-circle-outline',
-      subMenu: [
-        { title: 'View Incidents', icon: 'eye', url: 'isp-outage' },
-
-      ],
+      subMenu: [{ title: 'View Incidents', icon: 'eye', url: 'isp-outage' }],
     },
   ];
   public fnoPages = [
@@ -89,7 +87,11 @@ export class AppComponent implements OnInit {
       url: '',
       icon: 'globe',
       subMenu: [
-        { title: 'Manage Incidents', icon: 'construct-outline', url: 'manage-outages' },
+        {
+          title: 'Manage Incidents',
+          icon: 'construct-outline',
+          url: 'manage-outages',
+        },
         {
           title: 'View Incidents',
           icon: 'eye',
@@ -131,17 +133,23 @@ export class AppComponent implements OnInit {
     },
   ];
 
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   isOpen = false;
   constructor(private router: Router, private loginService: LoginService) {
     this.checkTimeout();
   }
   ngOnInit(): void {
-    this.loginService.loggedIn();
-    let token = localStorage.getItem('token');
-    if (token) {
-      this.userRole = JSON.parse(atob(token.split('.')[1]));
+    try {
+      this.loginService.loggedIn();
+      let token = localStorage.getItem('token');
+      if (token) {
+        this.userRole = JSON.parse(atob(token.split('.')[1]));
+      }
+
+    } catch (error) {
+      console.log('Caught error',error);
+
     }
+
   }
 
   prepareMenu() {
@@ -175,6 +183,10 @@ export class AppComponent implements OnInit {
   checkUserActivity() {
     clearTimeout(this.timeoutId);
     this.checkTimeout();
+  }
+  onResize(event: any) {
+
+
   }
 
   logout() {

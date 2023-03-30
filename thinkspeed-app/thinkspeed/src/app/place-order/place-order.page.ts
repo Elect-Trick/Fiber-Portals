@@ -27,7 +27,7 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
   isArray = new ReplaySubject<boolean>(1);
   locations: Array<Location> = [];
   selectedLocation: Location = {
-    location_id: '',
+    location_id: 0,
     location_string: '',
   };
   locationSub!: Subscription;
@@ -96,7 +96,7 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
       this.presentLoader().then(()=>{
         this.order = this.newOrder.value;
         this.order.location_type = this.type;
-        this.order.location_id = parseInt(this.selectedLocation.location_id);
+        this.order.location_id = this.selectedLocation.location_id;
         this.orderSub = this.orderService.placeOrder(this.order).subscribe({
           next: (data: any) => {
             this.loadingCtrl.dismiss();
@@ -147,7 +147,7 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
   reset() {
     this.newOrder.reset();
     this.selectedLocation = {
-      location_id: '',
+      location_id: 0,
       location_string: '',
     };
     this.openAccordion();
@@ -281,7 +281,7 @@ export class PlaceOrderPage implements OnInit, OnDestroy {
     this.isSelected = false;
 
     this.selectedLocation = {
-      location_id: '',
+      location_id: 0,
       location_string: '',
     };
     //this.isArray.next(false);

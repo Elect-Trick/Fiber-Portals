@@ -1,3 +1,6 @@
+import { OrderStatusPipe } from './order-status.pipe';
+import { EditOrderPage } from './edit-order/edit-order.page';
+import { ManageOrdersPage } from './manage-orders/manage-orders.page';
 import { ManageOutagesPage } from './manage-outages/manage-outages.page';
 import { PlaceOrderPage } from './place-order/place-order.page';
 import { FolderPage } from './folder/folder.page';
@@ -21,6 +24,9 @@ import { AddLocationPage } from './add-location/add-location.page';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { AddOutagePage } from './add-outage/add-outage.page';
+import { TinyintPipe } from './tinyint.pipe';
+import { ProcessOrderPage } from './process-order/process-order.page';
+import { ManageTicketsPage } from './manage-tickets/manage-tickets.page';
 
 
 
@@ -33,7 +39,8 @@ import { AddOutagePage } from './add-outage/add-outage.page';
     PlaceOrderPage,
     AddOutagePage,
     AddLocationPage,
-    ManageOutagesPage
+    ManageOutagesPage,ManageOrdersPage,EditOrderPage,TinyintPipe,OrderStatusPipe,ProcessOrderPage,ManageTicketsPage
+
 
 
   ],

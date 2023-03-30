@@ -106,7 +106,6 @@ export class IspOutagePage implements OnInit {
     this.paginatedOutages('root', 1);
   }
   filterByStatus() {
-    console.log(this.filterBy);
     switch (this.filterBy) {
       case 'open':
         this.paginatedOutages('root', 1);
@@ -234,9 +233,7 @@ export class IspOutagePage implements OnInit {
             this.markAsResolved(this.selectedOutage).then(() => {
               this.paginatedOutages('root', 1);
             });
-            this.presentToast(
-              `Outage ${this.selectedOutage.outage_reference} has been resolved`
-            );
+
           },
           role: 'Ok',
         },
@@ -250,14 +247,15 @@ export class IspOutagePage implements OnInit {
     this.closeSub = this.ticketService.closeOutage(outage).subscribe({
       next: (response) => {
         if (response) {
-          console.log('Outage has been closed, present toast');
+          this.presentToast(
+            `Outage ${this.selectedOutage.outage_reference} has been resolved`
+          );
         }
       },
     });
   }
   triggerUpdate(trigger: boolean) {
     this.updateModal = trigger;
-    console.log(this.updateModal);
   }
   async preparePagination() {
     this.paginationArray = [];
@@ -268,7 +266,6 @@ export class IspOutagePage implements OnInit {
   }
 
   postUpdate() {
-    console.log(this.update);
     if (this.update != '') {
       this.comment.comment = this.update;
       this.comment.outage_id = this.selectedOutage.outage_id;
@@ -277,7 +274,6 @@ export class IspOutagePage implements OnInit {
         let userItem = JSON.parse(atob(token.split('.')[1]));
         this.comment.comment_by = userItem.username;
       }
-      console.log(this.comment);
 
       this.presentLoader().then(() => {
         this.incidentUpdateSub = this.ticketService

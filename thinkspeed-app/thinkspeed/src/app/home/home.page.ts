@@ -32,6 +32,7 @@ export class HomePage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private loginService: LoginService
   ) {
+
     this.loginGroup = new FormGroup({
       password: new FormControl('', [
         Validators.required,

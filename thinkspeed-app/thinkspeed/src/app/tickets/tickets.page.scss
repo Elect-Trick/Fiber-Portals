@@ -53,32 +53,18 @@ ion-item.history-item:active {
 ion-card.comment-list {
   display: block;
   padding-top: 0 !important;
-  // justify-items: flex-start;
-  // justify-content: flex-end;
+
 }
 ion-card.comment-list:nth-of-type(2n) {
-  // display: flex;
-  // justify-content: flex-end;
   --background: #e7f5ff;
-  // display: grid;
-  // justify-content:
 }
 
 ion-label.comment-labels:nth-of-type(2) {
   color: red;
 }
-
-ion-card-header.comment-header:nth-of-type(2n) {
-  // display: flex;
-  // position: relative;
-  // align-content: flex-end;
-}
-
 .no-data {
   display: block;
   position: absolute;
-  // margin-left: 120px;
-  // transform: scale(1.5);
   top: 100px;
   justify-content: center;
   z-index: -1;
@@ -89,7 +75,6 @@ ion-card-header.comment-header:nth-of-type(2n) {
 }
 
 .no-results {
-  // transform: scale(1.5);;
   border-radius: 50%;
   margin-left: 150px;
 }
@@ -140,4 +125,15 @@ ion-icon.ticket-indicator-disputed {
   width: 15px;
   margin-left: 2%;
   margin-right: 1%;
+}
+
+
+.new-ticket-item{
+  --background:#e9ecef;
+
+}
+.new-ticket-btn{
+  // margin-right:-20px;
+  align-content: flex-end;
+  display: flex;
 }

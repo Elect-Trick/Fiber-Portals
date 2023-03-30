@@ -27,7 +27,7 @@ export class TicketsPage implements OnInit, OnDestroy {
   isSelected = false;
   fsanTickets: CompleteTicket[] = [];
   selectedLocation: Location = {
-    location_id: '',
+    location_id: 0,
     location_string: '',
   };
   comments: Comment[] = [];
@@ -64,8 +64,8 @@ export class TicketsPage implements OnInit, OnDestroy {
     alternative_contact_name: '',
     alternative_number: '',
     last_updated: '',
-    organization_id:0,
-    technician:''
+    organization_id: 0,
+    technician: '',
   };
   isDisputable = false;
   isDisputed = false;
@@ -196,12 +196,12 @@ export class TicketsPage implements OnInit, OnDestroy {
         this.locations = [];
         this.tickets = [];
         this.selectedLocation = {
-          location_id: '',
+          location_id: 0,
           location_string: '',
           location_type: '',
         };
         this.selectedTicket = {
-          ticket_id:0,
+          ticket_id: 0,
           ticket_reference: '',
           ticket_status: 0,
           location_id: 0,
@@ -218,8 +218,9 @@ export class TicketsPage implements OnInit, OnDestroy {
           network_id: '',
           alternative_contact_name: '',
           alternative_number: '',
-          last_updated: '', organization_id:0,
-          technician:''
+          last_updated: '',
+          organization_id: 0,
+          technician: '',
         };
         this.loadingCtrl.dismiss();
       });
@@ -251,16 +252,47 @@ export class TicketsPage implements OnInit, OnDestroy {
       this.resolveSub = this.ticketService.acceptResolution(ticket).subscribe({
         next: (data) => {
           if (data) {
-            this.fetchLocationTickets(this.selectedLocation).then(() => {
-              this.isDisputed = false;
-              this.isDisputable = false;
-
-              this.loadingCtrl.dismiss();
-            });
+            this.isDisputed = false;
+            this.isDisputable = false;
+            this.reset();
+            this.loadingCtrl.dismiss();
+            this.presentToast(
+              `Ticket ${ticket.ticket_reference} is now closed`
+            );
           }
         },
       });
     });
+  }
+
+  reset() {
+    this.selectedLocation = {
+      location_id: 0,
+      location_string: '',
+      location_type: '',
+    };
+    this.selectedTicket = {
+      ticket_id: 0,
+      ticket_reference: '',
+      ticket_status: 0,
+      location_id: 0,
+      location_type: '',
+      service_id: 0,
+      fault_id: 0,
+      fault_description: '',
+      comments: '',
+      client_name: '',
+      client_surname: '',
+      client_contact_number: '',
+      client_email: '',
+      creation_date: '',
+      network_id: '',
+      alternative_contact_name: '',
+      alternative_number: '',
+      last_updated: '',
+      organization_id: 0,
+      technician: '',
+    };
   }
   logDispute() {
     this.isDisputed = false;
@@ -277,22 +309,12 @@ export class TicketsPage implements OnInit, OnDestroy {
       this.commentSub = this.ticketService.postComment(this.comment).subscribe({
         next: (response) => {
           if (response) {
-            switch (this.type) {
-              case 'location':
-                this.fetchLocationTickets(this.selectedLocation).then(() => {
-                  this.loadingCtrl.dismiss();
-                });
-
-                break;
-
-              default:
-                this.fetchTicketbyID(this.searchObject).then(() => {
-                  this.fetchComments(this.selectedTicket).then(() => {
-                    this.loadingCtrl.dismiss();
-                  });
-                });
-                break;
-            }
+            this.loadingCtrl.dismiss();
+            this.presentToast(
+              `Ticket ${this.selectedTicket.ticket_reference} has been disputed`
+            ).then(() => {
+              this.reset();
+            });
           }
         },
       });
@@ -316,7 +338,7 @@ export class TicketsPage implements OnInit, OnDestroy {
   async clearData() {
     this.isChecked = false;
     this.tickets = [];
-    this.locations =[];
+    this.locations = [];
     this.isDisputable = false;
     this.isDisputed = false;
     this.found = false;
@@ -340,10 +362,10 @@ export class TicketsPage implements OnInit, OnDestroy {
       alternative_contact_name: '',
       alternative_number: '',
       last_updated: '',
-      organization_id:0,
-      technician:''
+      organization_id: 0,
+      technician: '',
     };
-    this.selectedLocation = { location_id: '', location_string: '' };
+    this.selectedLocation = { location_id: 0, location_string: '' };
     this.searchObject = { type: 'sdu', searchString: '' };
   }
   toggleLocationType(event: any) {
@@ -445,6 +467,10 @@ export class TicketsPage implements OnInit, OnDestroy {
     }
     this.myClass = myClass as string;
     return this.myClass;
+  }
+
+  newTicket(){
+
   }
 
   fetchTicketStatus(statusID: number) {

@@ -8,34 +8,55 @@ import { OrderStatus } from '../interfaces/order-status';
 import { Location } from '../interfaces/location';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrdersService {
-  baseURL = "https://localhost/xampp/orders.php";
+  baseURL = 'https://localhost/xampp/orders.php';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  findLocation(data: LocationSearch):Observable<any>{
-   return  this.http.get<any>(`${this.baseURL}?find-location=${JSON.stringify(data)}`);
+  findLocation(data: LocationSearch): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseURL}?find-location=${JSON.stringify(data)}`
+    );
   }
-  findLocationwithID(location:Location):Observable<any>{
-    return  this.http.get<any>(`${this.baseURL}?fetch-location=${JSON.stringify(location)}`);
+  findLocationwithID(location: Location): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseURL}?fetch-location=${JSON.stringify(location)}`
+    );
   }
-  fetchProducts(){
+  fetchProducts() {
     return this.http.get<Products[]>(`${this.baseURL}?products`);
   }
 
-  placeOrder(data:NewOrder):Observable<any>{
-    return this.http.post<any>(`${this.baseURL}?place-order`,data);
+  placeOrder(data: NewOrder): Observable<any> {
+    return this.http.post<any>(`${this.baseURL}?place-order`, data);
   }
-  orderStatus(order:OrderStatus):Observable<any>{
-    return  this.http.get<any>(`${this.baseURL}?order-status=${JSON.stringify(order)}`);
+  orderStatus(order: OrderStatus): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseURL}?order-status=${JSON.stringify(order)}`
+    );
   }
-  rejectOrder(order: string){
-    return this.http.patch<any>(`${this.baseURL}?reject-order`,order);
+  rejectOrder(order: string) {
+    return this.http.patch<any>(`${this.baseURL}?reject-order`, order);
   }
 
-  addLocation(location: any){
-    return this.http.post<any>(`${this.baseURL}?add-location`,location);
+  addLocation(location: any) {
+    return this.http.post<any>(`${this.baseURL}?add-location`, location);
+  }
+  fnoPendingOrders(page: number): Observable<any> {
+    return this.http.get<any>(`${this.baseURL}?pending-fno-orders=${page}`);
+  }
+  fnoActiveOrders(page: number): Observable<any> {
+    return this.http.get<any>(`${this.baseURL}?active-fno-orders=${page}`);
+  }
+  fetchAwaitingInstallation(page: number): Observable<any> {
+    return this.http.get<any>(`${this.baseURL}?awaiting-installation=${page}`);
+  }
+
+  updateOrder(order:OrderStatus):Observable<any>{
+  return this.http.post<any>(`${this.baseURL}?update-order`, JSON.stringify(order));
+
+
   }
 }

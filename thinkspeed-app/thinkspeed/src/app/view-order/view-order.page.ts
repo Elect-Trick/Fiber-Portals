@@ -1,9 +1,6 @@
 import { Subscription } from 'rxjs';
-import { HttpResponse } from '@capacitor/core';
-import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { IonModal } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core/components';
-import { Order } from '../interfaces/order';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+
 import { OrderStatus } from '../interfaces/order-status';
 import { OrdersService } from '../services/orders.service';
 import { Location } from '../interfaces/location';
@@ -18,7 +15,7 @@ import { ENUMS } from '../Helpers/globalEnums';
 export class ViewOrderPage implements OnInit,OnDestroy {
   @Input() order!: OrderStatus;
   location: Location = {
-    location_id: '',
+    location_id: 0,
     location_string: '',
   };
   location_string = '';
@@ -29,7 +26,7 @@ export class ViewOrderPage implements OnInit,OnDestroy {
   constructor(private orderService: OrdersService) {}
   ngOnDestroy(): void {
     this.location = {
-      location_id: '',
+      location_id: 0,
       location_string: '',
     };
     if(this.locationSub){
@@ -46,7 +43,7 @@ export class ViewOrderPage implements OnInit,OnDestroy {
     // this.modal.dismiss(null, 'cancel');
   }
   prepareLocationObject() {
-    this.location.location_id = this.order.location_id.toString();
+    this.location.location_id = this.order.location_id;
     this.location.location_string = this.order.location_type;
    this.locationSub = this.orderService.findLocationwithID(this.location).subscribe({
       next: (data) => {

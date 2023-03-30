@@ -30,7 +30,7 @@ export class FolderPage implements OnInit, OnDestroy {
   finalUrl = 'http://localhost:8060/';
 
   async fetchStats() {
-   await this.presentLoader().then(() => {
+    await this.presentLoader().then(() => {
       this.loginService.fetchStats().subscribe({
         next: (response) => {
           if (response) {
@@ -65,24 +65,15 @@ export class FolderPage implements OnInit, OnDestroy {
   sourceUrl!: SafeUrl;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
     private loginService: LoginService,
-    private loadingCtrl: LoadingController,
-    private sanitizer: DomSanitizer
+    private loadingCtrl: LoadingController
   ) {
     this.fetchStats();
-    this.loginService.getStats().subscribe({
-      next: (data) => {
-        this.finalUrl = data;
-      },
-    });
 
   }
   ngOnDestroy(): void {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
   prepareChart() {
     this.barChartData = {
       labels: [

@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ManageTicketsPageRoutingModule } from './manage-tickets-routing.module';
+import { ProcessOrderPageRoutingModule } from './process-order-routing.module';
 
-import { ManageTicketsPage } from './manage-tickets.page';
+import { ProcessOrderPage } from './process-order.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ManageTicketsPageRoutingModule
+    ProcessOrderPageRoutingModule
   ],
   declarations: []
 })
-export class ManageTicketsPageModule {}
+export class ProcessOrderPageModule {}

@@ -13,7 +13,7 @@ import { ENUMS } from '../Helpers/globalEnums';
 import { Location } from '../interfaces/location';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../interfaces/user';
-import { Outage } from '../interfaces/outage';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-tickets',
@@ -78,7 +78,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
   paginationArray: number[] = [];
   closedPaginationArray: number[] = [];
   location: Location = {
-    location_id: '',
+    location_id: 0,
     location_string: '',
   };
   isResolved = false;
@@ -95,6 +95,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
   techSub!: Subscription;
   openTSub!: Subscription;
   commentSub2!: Subscription;
+  commentForm!: FormGroup;
   constructor(
     private ticketService: ManageFaultsService,
     private loadingCtrl: LoadingController,
@@ -125,31 +126,33 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
     if (this.commentSub2) {
       this.commentSub2.unsubscribe();
     }
-
   }
 
   ngOnInit() {
-    this.presentLoader().then(() => {
-      this.paginatedTickets('root', 1).then(() => {
-        this.openAccordion();
-        this.fetchTechnicians().finally(()=>{
-          this.loadingCtrl.dismiss();
-
-        })
-      });
-
+    this.paginatedTickets('root', 1).then(() => {
+      this.openAccordion();
+      this.fetchTechnicians();
     });
+  }
+
+  buildForm(){
+    return this.commentForm = new FormGroup({
+      comment: new FormControl('',[Validators.required,Validators.minLength(15)])
+    })
+
   }
   async markAsResolved() {
     this.isResolved = true;
+    this.buildForm();
   }
 
   logDispute() {
+
     this.comment.ticket_id = this.selectedTicket.ticket_id;
     this.comment.service_id = this.selectedTicket.service_id;
     this.comment.location_id = this.selectedTicket.location_id;
-    this.comment.location_type = this.selectedTicket.location_type;
-    let token = localStorage.getItem('token');
+    this.comment.comment = this.commentForm.controls['comment'].value;
+    this.comment.location_type = this.selectedTicket.location_type;    let token = localStorage.getItem('token');
     if (token) {
       let userItem = JSON.parse(atob(token.split('.')[1]));
       this.comment.replier_email = userItem.username;
@@ -159,9 +162,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
         next: (response) => {
           if (response) {
             this.resolved(this.selectedTicket).then(() => {
-              // this.fetchComments(this.selectedTicket);
-              // this.countTickets();
-            });
+                          });
           } else {
             console.log('Failed to post comment');
           }
@@ -219,14 +220,12 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
   segmentChanged(event: any) {
     this.type = event.detail.value;
     if (this.type == 'closed') {
-      this.presentLoader().then(()=>{
+      this.presentLoader().then(() => {
         if (!this.closedPagination) {
           this.PaginatedClosedTickets('root', 1);
         }
         this.loadingCtrl.dismiss();
-
       });
-
     } else {
       this.paginatedTickets('root', 1);
     }
@@ -352,7 +351,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
   }
 
   async prepareLocationObject() {
-    this.location.location_id = this.selectedTicket.location_id.toString();
+    this.location.location_id = this.selectedTicket.location_id;
     this.location.location_string = this.selectedTicket.location_type;
     this.locationSub = this.orderService
       .findLocationwithID(this.location)

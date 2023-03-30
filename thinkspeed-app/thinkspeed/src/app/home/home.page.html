@@ -36,7 +36,7 @@
                         ></ion-input>
                       </ion-item>
                       <ion-label class="error-labels" *ngIf="loginGroup.controls['email'].touched &&!loginGroup.controls['email'].valid"
-                        >Required</ion-label
+                        >Please enter a valid email</ion-label
                       >
 
                       <ion-item class="form-control">
@@ -55,7 +55,7 @@
                     </ion-list>
                     <ion-item class="button-area" lines="none">
                       <ion-col  size-xs="6">
-                        <ion-button type="submit" fill="solid" shape="square">
+                        <ion-button [disabled]="!loginGroup.valid" type="submit" fill="solid" shape="square">
                           Login
                         </ion-button>
                       </ion-col>

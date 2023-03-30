@@ -1,0 +1,58 @@
+.order-list-item:hover {
+  --background: #ffc409;
+}
+
+.item-descriptor {
+  margin-top: 12px;
+}
+.order-content {
+  background-color: gray;
+  // border: 2px solid gray;
+  border-radius: 4px;
+}
+ion-toolbar.card-toolbar {
+  padding: 0;
+  --background: #aac4f1;
+}
+.card-toolbar {
+  --background: #aac4f1;
+}
+.order-buttons {
+  --background: #e9ecef;
+}
+
+.client-item-descriptor {
+  font-size: 18px;
+  font-size: 18px;
+}
+.pending-order-label {
+  color: #eb445a;
+}
+.pending-label {
+  display: flex;
+  margin-left: -10px;
+}
+
+.active-order-label {
+  color: #2dd36f;
+}
+.awaiting-install-label {
+  color: #5260ff;
+}
+.terminate-order-btn {
+  --background: #eb445a;
+}
+.edit-order-btn {
+  --background: #ffc409;
+}
+.process-order-btn {
+  --background: #2dd36f;
+}
+.copy-icon {
+  transform: scale(1.5);
+}
+.copy-icon:hover {
+  transform: scale(2);
+  cursor: pointer;
+  color: #ffc409;
+}

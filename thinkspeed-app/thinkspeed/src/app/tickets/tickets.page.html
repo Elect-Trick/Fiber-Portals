@@ -18,7 +18,20 @@
   <ion-card class="main-card">
     <ion-card-header class="form-toolbar">
       <ion-toolbar>
-        <ion-title class="header-description"> Search for Ticket(s) </ion-title>
+        <ion-row>
+          <ion-col size="10">
+            <ion-title>Search for Ticket(s)</ion-title>
+          </ion-col>
+          <ion-col size="2">
+
+            <ion-item class="new-ticket-item" lines="none">
+              <ion-button class="new-ticket-btn" (click)="newTicket()" expand="block" fill="fill">
+                New Ticket
+                <ion-icon slot="start" name="add"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-col>
+        </ion-row>
       </ion-toolbar>
     </ion-card-header>
     <ion-card-content class="location-content">
@@ -26,7 +39,7 @@
         <ion-row>
           <ion-col size="2" class="search-type-checkboxes">
             <ion-radio-group
-            *ngIf="type==='location'"
+              *ngIf="type==='location'"
               value="sdu"
               (ionChange)="toggleLocationType($event)"
             >
@@ -91,7 +104,7 @@
           <ion-col size="12">
             <ion-card class="location-list">
               <ion-card-content>
-                <ion-list *ngIf="!isFSAN" >
+                <ion-list *ngIf="!isFSAN">
                   <ion-item
                     class="location-item"
                     (click)="confirmLocation(location)"
@@ -105,7 +118,7 @@
                     <ion-label>No Matches, Refine the search</ion-label>
                   </ion-item> -->
                 </ion-list>
-                <ion-list *ngIf="isFSAN" >
+                <ion-list *ngIf="isFSAN">
                   <ion-item
                     class="location-item"
                     (click)="viewTicket(ticket)"
@@ -121,7 +134,7 @@
         </ion-row>
         <ion-row>
           <ion-col size="6">
-            <ion-item *ngIf="selectedLocation.location_id!==''" lines="none">
+            <ion-item *ngIf="selectedLocation.location_id >0" lines="none">
               <ion-label>{{selectedLocation.location_string}}</ion-label>
               <ion-icon
                 class="selected-location-icon"
@@ -137,7 +150,7 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-        <ion-card *ngIf="selectedLocation.location_id !==''">
+        <ion-card *ngIf="selectedLocation.location_id >0">
           <ion-toolbar>
             <ion-icon
               *ngIf="selectedTicket.ticket_status >4"
@@ -459,10 +472,7 @@
                   </ion-row>
                   <ion-row>
                     <ion-col size="12">
-                      <ion-toolbar
-                        *ngIf="selectedTicket.ticket_id!==0"
-
-                      >
+                      <ion-toolbar *ngIf="selectedTicket.ticket_id!==0">
                         <ion-title>Interactions</ion-title>
                       </ion-toolbar>
                       <ion-card
@@ -528,7 +538,7 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12">
-        <ion-card *ngIf="type==='ticket_id' && selectedTicket.ticket_id !==0" >
+        <ion-card *ngIf="type==='ticket_id' && selectedTicket.ticket_id !==0">
           <ion-toolbar>
             <ion-icon
               *ngIf="selectedTicket.ticket_status >4"
