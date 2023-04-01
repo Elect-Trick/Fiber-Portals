@@ -1,0 +1,8 @@
+{
+    "require": {
+        "miladrahimi/php-jwt": "2.*",
+        "firebase/php-jwt": "^6.3",
+        "paragonie/sodium_compat": "^1.19",
+        "cboden/ratchet": "^0.4.4"
+    }
+}
