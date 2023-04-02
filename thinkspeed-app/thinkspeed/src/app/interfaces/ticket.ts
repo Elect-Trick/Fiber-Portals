@@ -18,5 +18,5 @@ export interface Ticket {
   alternative_number: string;
   last_updated: string;
   organization_id:number;
-  technician:string;
+  technician:number;
 }

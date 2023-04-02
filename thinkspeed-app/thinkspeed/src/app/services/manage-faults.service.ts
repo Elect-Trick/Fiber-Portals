@@ -11,7 +11,7 @@ import { Outage } from '../interfaces/outage';
   providedIn: 'root',
 })
 export class ManageFaultsService {
-  baseURL = 'https://localhost/xampp/manage-tickets.php';
+  baseURL = 'https://localhost/apis/clearaccess/manage-tickets.php';
   constructor(private http: HttpClient) {}
 
   fetchFaultTypes(): Observable<any> {

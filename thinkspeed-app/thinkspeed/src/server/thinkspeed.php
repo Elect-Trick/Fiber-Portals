@@ -1,11 +1,11 @@
 
 <?php
 
-include "C:/xampp/htdocs/xampp/headers.php";
-include "C:/xampp/htdocs/xampp/user-roles.php";
-include "C:/xampp/htdocs/xampp/jwt.php";
-include "C:/xampp/htdocs/xampp/user.php";
-include "./stats.php";
+include "C://xampp/htdocs/apis/clearaccess/headers.php";
+include "C://xampp/htdocs/apis/clearaccess/user-roles.php";
+include "C://xampp/htdocs/apis/clearaccess/jwt.php";
+include "C://xampp/htdocs/apis/clearaccess/user.php";
+include "C://xampp/htdocs/apis/clearaccess/stats.php";
 
 
 if ($_SERVER['QUERY_STRING'] == 'getAllUserRoles') {
@@ -55,7 +55,7 @@ if (isset($_REQUEST['add-user'])) {
         exit();
       } else {
         $query = "INSERT INTO users(user_account_name,user_email,password,organization_id,role_id,user_last_login) ";
-        $query .= "VALUES('$account_name','$email','$hashed_password','$organization','$user_role','$user_last_login')";
+        $query .= "VALUES('$account_name','$email','$hashed_password','1','1','$user_last_login')";
 
         $result = mysqli_query($connection, $query);
 
@@ -80,7 +80,7 @@ if (isset($_REQUEST['add-user'])) {
 if (isset($_REQUEST['manage-users'])) {
   $jwtInstance = new JWT();
   $token = $jwtInstance->fetchJWT();
-  // To filter users by Orgnization pending discussion 
+  // To filter users by Orgnization pending discussion
   $organization = $jwtInstance->getOrgnization($token);
   $token_valid = $jwtInstance->is_jwt_valid($token);
   if (!$token_valid) {
@@ -91,7 +91,7 @@ if (isset($_REQUEST['manage-users'])) {
     $result = mysqli_query($connection, $query);
     $users = array();
     if (!$result) {
-      // Nothing found 
+      // Nothing found
       http_response_code(400);
       exit();
     } else {
@@ -139,7 +139,7 @@ if (isset($_REQUEST['fetch-stats'])) {
   $token_valid = $jwtInstance->is_jwt_valid($token);
   $service_status = 2;
   if ($token_valid) {
-    // Services 
+    // Services
     $active_mdu_services = "SELECT COUNT(*) from mdu_services where service_status='2'";
     $active_sdu_services = "SELECT COUNT(*) from sdu_services where service_status='2'";
     $mdu_active_services_result = mysqli_query($connection, $active_mdu_services);
@@ -202,7 +202,7 @@ if (isset($_REQUEST['fetch-stats'])) {
     echo json_encode($stat);
     // *****************************************************************
 
-    // 
+    //
     // echo $active_services_count;
     // echo $pending_services_count;
     // echo $cancelled_services_count;

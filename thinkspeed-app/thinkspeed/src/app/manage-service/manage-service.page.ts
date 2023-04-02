@@ -77,7 +77,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
     alternative_number: '',
     last_updated: '',
     organization_id:0,
-    technician:''
+    technician:0
   };
   tickets: Ticket[] = [];
   products: Products[] = [];
@@ -176,7 +176,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
       alternative_number: '',
       last_updated: '',
       organization_id:0,
-      technician:''
+      technician:0
     };
 
     if (this.faultTypes.length == 0) {
@@ -453,7 +453,8 @@ export class ManageServicePage implements OnInit, OnDestroy {
       });
   }
   regrade() {
-    this.regradeRequest.location_type = this.serviceObject
+    this.presentLoader().then(()=>{
+      this.regradeRequest.location_type = this.serviceObject
       .locationType as string;
     this.regradeRequest.order_status = 1;
     this.regradeRequest.order_type = 1;
@@ -474,6 +475,8 @@ export class ManageServicePage implements OnInit, OnDestroy {
           } else {
             this.presentRegradeToast('Your session has expired');
           }
+          this.loadingCtrl.dismiss();
+
         },
         error: (error: any) => {
           switch (error.status) {
@@ -488,10 +491,15 @@ export class ManageServicePage implements OnInit, OnDestroy {
             default:
               break;
           }
+          this.loadingCtrl.dismiss();
+
         },
       });
       this.clearRegrade();
     }
+
+    });
+
   }
 
   async cancelRegrade(regrade: Regrade) {
@@ -656,7 +664,7 @@ export class ManageServicePage implements OnInit, OnDestroy {
       alternative_number: '',
       last_updated: '',
       organization_id:0,
-      technician:''
+      technician:0
     };
     this.selectedLocation = { location_id: 0, location_string: '' };
     this.serviceObject = { searchString: '', searchType: 0, locationType: '' };

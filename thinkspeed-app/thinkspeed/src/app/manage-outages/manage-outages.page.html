@@ -118,7 +118,6 @@
                     <ion-accordion
                       (click)="$event.stopPropagation()"
                       class="accord-header"
-
                       *ngFor="let index;let outage of outages"
                       [value]="outage.outage_reference"
                     >
@@ -150,7 +149,7 @@
                         </ion-col>
                       </ion-item>
                       <div (click)="$event.stopPropagation()" slot="content">
-                        <ion-card >
+                        <ion-card>
                           <ion-card-header>
                             <ion-item>
                               <ion-card-title>
@@ -170,7 +169,7 @@
                                 Add Update
                               </ion-button>
                               <ion-button
-                              *ngIf="selectedOutage.outage_status <2"
+                                *ngIf="selectedOutage.outage_status <2"
                                 (click)="resolve();$event.stopPropagation()"
                                 expand="block"
                                 fill="full"
@@ -196,6 +195,16 @@
                                   </ion-card-header>
                                   <ion-card-content>
                                     <h2>{{outage.affected_areas}}</h2>
+                                    <br />
+                                    <ion-row>
+                                      <ion-title>Report</ion-title>
+
+                                      <ion-col size="12">
+                                        <ion-item>
+                                          {{outage.description}}
+                                        </ion-item>
+                                      </ion-col>
+                                    </ion-row>
                                   </ion-card-content>
                                 </ion-card>
                               </ion-col>

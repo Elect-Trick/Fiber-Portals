@@ -1,14 +1,14 @@
 
 <?php
-include './headers.php';
-include './jwt.php';
-include './ticket.php';
-include './complete-ticket.php';
-include './fault-type.php';
-include './comment.php';
-include './user.php';
-include './outage.php';
-include './outage-comment.php';
+include 'C://xampp/htdocs/apis/clearaccess/headers.php';
+include 'C://xampp/htdocs/apis/clearaccess/jwt.php';
+include 'C://xampp/htdocs/apis/clearaccess/ticket.php';
+include 'C://xampp/htdocs/apis/clearaccess/complete-ticket.php';
+include 'C://xampp/htdocs/apis/clearaccess/fault-type.php';
+include 'C://xampp/htdocs/apis/clearaccess/comment.php';
+include 'C://xampp/htdocs/apis/clearaccess/user.php';
+include 'C://xampp/htdocs/apis/clearaccess/outage.php';
+include 'C://xampp/htdocs/apis/clearaccess/outage-comment.php';
 
 if (isset($_REQUEST['log-ticket'])) {
     $postdata = file_get_contents("php://input");
@@ -612,7 +612,7 @@ if (isset($_REQUEST['log-outage'])) {
                 break;
         }
 
-        // Submit to DB 
+        // Submit to DB
         $query = "INSERT INTO outages(outage_reference,affected_areas,date,incident_type,severity,last_updated) ";
         $query .= "VALUES('$ticketReference','$affected_areas','$date_logged','$incident_type', '$severity','$date_logged')";
         $result = mysqli_query($connection, $query);

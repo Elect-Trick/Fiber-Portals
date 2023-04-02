@@ -9,7 +9,7 @@ import { Regrade } from '../interfaces/regrade';
   providedIn: 'root',
 })
 export class ManageServicesService {
-  baseURL = 'https://localhost/xampp/manage-services.php';
+  baseURL = 'https://localhost/apis/clearaccess/manage-services.php';
 
   constructor(private http: HttpClient) {}
 

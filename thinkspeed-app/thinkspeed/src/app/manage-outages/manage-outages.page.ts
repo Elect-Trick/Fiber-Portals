@@ -55,6 +55,7 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
     incident_report: '',
     affected_areas: [],
     last_updated: new Date(),
+    description: '',
   };
   closeSub!: Subscription;
   incidentUpdateSub!: Subscription;
@@ -185,6 +186,7 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
       incident_report: '',
       affected_areas: [],
       last_updated: new Date(),
+      description: '',
     };
     this.comments = [];
     this.outages = [];
@@ -192,8 +194,7 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
     this.outageSearch = {
       searchString: '',
     };
-    this.paginationArray =[];
-
+    this.paginationArray = [];
   }
   async OpenModal(isOpen: boolean) {
     this.isModalOpen = isOpen;
@@ -393,6 +394,7 @@ export class ManageOutagesPage implements OnInit, OnDestroy {
       incident_report: '',
       affected_areas: [],
       last_updated: new Date(),
+      description: '',
     };
     this.paginatedOutages('root', 1);
     this.searchString = '';

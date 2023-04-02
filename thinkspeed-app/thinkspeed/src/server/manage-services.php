@@ -1,8 +1,8 @@
 <?php
-include './headers.php';
-include './jwt.php';
-include './service.php';
-include './regrade.php';
+include 'localhost/apis/clearaccess/headers.php';
+include 'localhost/apis/clearaccess/jwt.php';
+include 'localhost/apis/clearaccess/service.php';
+include 'localhost/apis/clearaccess/regrade.php';
 
 if (isset($_REQUEST['find-service'])) {
 
@@ -18,9 +18,9 @@ if (isset($_REQUEST['find-service'])) {
     $jwtInstance = new JWT();
     $token = $jwtInstance->fetchJWT();
     $token_valid = $jwtInstance->is_jwt_valid($token);
-    
+
     if ($token_valid) {
-        // Check search type,  
+        // Check search type,
 
         if ($locationType == 'mdu') {
             switch ($searchType) {
@@ -33,8 +33,8 @@ if (isset($_REQUEST['find-service'])) {
                         echo "false";
                         exit();
                     } else {
-                    
-                       
+
+
                         while ($row = mysqli_fetch_array($result)) {
                             $location =  $row['mdu_unit'] . "," . $row['mdu_name'] . " ," . $row['mdu_street_name'] . ", " . $row['mdu_surburb']." UNIT ".$row['mdu_unit'];
                            $service = new Service($row['service_id'], $row['location_id'], $row['product_id'], $row['organization_id'], $row['isp_order_number'], $row['order_type'], $row['network_id'], $row['isp_modem_mac'], $row['service_status'], $newDate, $row['vlan'], $location, $row['client_name'], $row['client_surname'], $row['client_email'], $row['client_contact_number'],$row['order_number']);
@@ -45,7 +45,7 @@ if (isset($_REQUEST['find-service'])) {
                     }
                     break;
                 case 2:
-                    # Service search using FSAN 
+                    # Service search using FSAN
                     $services = array();
 
                     $query = "SELECT *,mdu_orders.client_name,mdu_orders.order_number,mdu_orders.client_surname,mdu_orders.client_email,mdu_orders.client_contact_number,mdu_orders.client_name,mdu_orders.client_surname,mdu_orders.client_email,mdu_orders.client_contact_number,mdu_services.network_id, mdu_locations.mdu_unit, mdu_locations.mdu_name,mdu_locations.mdu_street_name,mdu_locations.mdu_surburb from (mdu_services  inner join mdu_locations on mdu_services.location_id = mdu_locations.location_id AND mdu_services.network_id like '%$searchString%') inner JOIN mdu_orders on mdu_services.location_id= mdu_orders.location_id ";
@@ -93,7 +93,7 @@ if (isset($_REQUEST['find-service'])) {
                     break;
 
                 case 2:
-                    # Service search using FSAN 
+                    # Service search using FSAN
 
                     //echo json_encode($searchString);
                     $services = array();

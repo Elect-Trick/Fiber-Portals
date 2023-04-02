@@ -35,6 +35,7 @@ export class LocationsPage implements OnInit, OnDestroy {
     incident_report: '',
     affected_areas: [],
     last_updated: new Date(),
+    description: '',
   };
   sduPaginationArray: number[] = [];
   mduPaginationArray: number[] = [];
@@ -222,6 +223,8 @@ export class LocationsPage implements OnInit, OnDestroy {
             this.mduEntries = response.totalEntries;
             this.preparePagination();
             this.loadingCtrl.dismiss();
+          } else {
+            this.loadingCtrl.dismiss();
           }
         },
       });
@@ -238,10 +241,12 @@ export class LocationsPage implements OnInit, OnDestroy {
             this.sduEntries = response.totalEntries;
             this.preparePagination();
 
-            this.loadingCtrl.dismiss();
+            // this.loadingCtrl.dismiss();
+          } else {
           }
         },
       });
+      this.loadingCtrl.dismiss();
     });
   }
   async presentLoader() {

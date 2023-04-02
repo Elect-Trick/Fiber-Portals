@@ -55,6 +55,7 @@ enum Products {
   'FTTH- 50/50Mbps' = 2,
   'FTTH- 100/100Mbps' = 3,
   'FTTH- 200/200Mbps' = 4,
+  'FTTH- 500/500Mbps' = 5,
 }
 enum OrganizationName {
   'Afrihost' = 1,

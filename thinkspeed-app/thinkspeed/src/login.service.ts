@@ -11,7 +11,7 @@ export class LoginService {
   tokenSource = new ReplaySubject<any>(1);
   token$ = this.tokenSource.asObservable();
   data = false;
-  baseURL = 'https://localhost/xampp/';
+  baseURL = 'https://localhost/apis/clearaccess/';
 
   constructor(private http: HttpClient) {}
   refreshToken(): Observable<HttpResponse> {

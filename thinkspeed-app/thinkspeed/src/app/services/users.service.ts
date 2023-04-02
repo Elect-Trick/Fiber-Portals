@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService {
-  baseURL = "https://localhost/xampp/";
+  baseURL = "https://localhost/apis/clearaccess/";
 
   constructor(private http: HttpClient) { }
 

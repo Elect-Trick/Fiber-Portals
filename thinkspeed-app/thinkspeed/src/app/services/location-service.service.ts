@@ -8,7 +8,7 @@ import { LocationSearch } from '../interfaces/location-search';
   providedIn: 'root',
 })
 export class LocationServiceService {
-  baseURL = 'https://localhost/xampp/manage-locations.php';
+  baseURL = 'https://localhost/apis/clearaccess/manage-locations.php';
   constructor(private http: HttpClient) {}
 
   paginatedMdus(page: number): Observable<any> {

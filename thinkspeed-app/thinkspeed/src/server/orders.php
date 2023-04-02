@@ -1,9 +1,9 @@
 <?php
-include "C:/xampp/htdocs/xampp/headers.php";
-include "C:/xampp/htdocs/xampp/jwt.php";
-include "C:/xampp/htdocs/xampp/location.php";
-include "C:/xampp/htdocs/xampp/products.php";
-include "C:/xampp/htdocs/xampp/order-status.php";
+include "localhost/apis/clearaccess/headers.php";
+include "localhost/apis/clearaccess/jwt.php";
+include "localhost/apis/clearaccess/location.php";
+include "localhost/apis/clearaccess/products.php";
+include "localhost/apis/clearaccess/order-status.php";
 
 // Find Location based on search string
 if (isset($_REQUEST['find-location']) && $_REQUEST['find-location'] != "") {
@@ -73,7 +73,7 @@ if (isset($_REQUEST['find-location']) && $_REQUEST['find-location'] != "") {
       exit();
     }
   } else {
-    //invalid token return false; 
+    //invalid token return false;
     echo "false";
     exit();
   }
@@ -170,7 +170,7 @@ if (isset($_REQUEST['place-order'])) {
 
     if ($location_type == 'mdu') {
       // echo " entering mdu if ";
-      // order is location type based to avoid anamolies 
+      // order is location type based to avoid anamolies
       $date = date('Y:m:d');
       $newDate = str_replace(":", "-", $date);
       $processedDate = "CAC" . str_replace(':', '', $date);
@@ -497,7 +497,7 @@ if (isset($_REQUEST['add-location'])) {
   }
 }
 
-// FNO SECTION 
+// FNO SECTION
 
 if (isset($_REQUEST['pending-fno-orders'])) {
   $jwtInstance = new JWT();
@@ -595,7 +595,7 @@ if (isset($_REQUEST['update-order'])) {
   $contact_number =  mysqli_real_escape_string($connection,$obj->contact_number);
   $location_type =  mysqli_real_escape_string($connection,$obj->location_type);
   $order_number = mysqli_real_escape_string($connection,$obj->order_number);
-  
+
  $token = $jwtInstance->fetchJWT();
   $organization =  mysqli_real_escape_string($connection, $jwtInstance->getOrgnization($token));
   $token_valid = $jwtInstance->is_jwt_valid($token);

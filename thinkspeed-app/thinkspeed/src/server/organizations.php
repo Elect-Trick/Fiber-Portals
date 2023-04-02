@@ -1,12 +1,12 @@
 
 <?php
 
-include "C:/xampp/htdocs/xampp/user-roles.php";
-include "C:/xampp/htdocs/xampp/headers.php";
+include "localhost/apis/clearaccess/user-roles.php";
+include "localhost/apis/clearaccess/headers.php";
 //foreach($_SERVER as $param => $value) echo "$param =$value'\n";
 
 class Organizations{
-	
+
 	public $organization_id ;
   public $organization_name;
 
@@ -28,7 +28,7 @@ if($_SERVER['QUERY_STRING']=='getOrganizations')
 }
 
 function getOrganizations(){
-	
+
   global $connection;
   $organizations = array();
   $query ="SELECT * from organizations";
@@ -50,10 +50,10 @@ die("Could not fetch organizations".mysqli_error($connection));
 }
 
 if($_SERVER['QUERY_STRING']=='manageUsers'){
-	
+
 }
 
 function manageUsers(){
-	
+
 }
 ?>

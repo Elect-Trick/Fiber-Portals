@@ -14,6 +14,7 @@ import { Location } from '../interfaces/location';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../interfaces/user';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Technician } from '../interfaces/technician';
 
 @Component({
   selector: 'app-manage-tickets',
@@ -47,7 +48,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
     alternative_number: '',
     last_updated: '',
     organization_id: 0,
-    technician: '',
+    technician: 0,
   };
   isFiltered = false;
 
@@ -83,8 +84,8 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
   };
   isResolved = false;
   locationSub!: Subscription;
-  technicians: User[] = [];
-  tech = '';
+  technicians: Technician[] = [];
+  tech = 0;
   assigned = false;
   commentSub!: Subscription;
   tempStorage: Ticket[] = [];
@@ -133,6 +134,11 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
       this.openAccordion();
       this.fetchTechnicians();
     });
+  }
+
+  findTech(techID:number){
+    return this.technicians.find(z=>z.technician_id ==techID)?.tech_name;
+
   }
 
   buildForm(){
@@ -242,7 +248,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
       this.selectedTicket = ticket;
       this.prepareLocationObject();
       this.fetchComments(this.selectedTicket);
-      this.assigned = this.selectedTicket.technician === '' ? false : true;
+      this.assigned = this.selectedTicket.technician > 0 ? true :false;
       console.log(this.assigned);
       this.toggleAccordion().then(() => {
         this.loadingCtrl.dismiss();
@@ -278,7 +284,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
   }
 
   async paginatedTickets(direction: string, page: number) {
-    this.tech = '';
+    this.tech = 0;
     this.isFiltered = false;
     this.presentLoader().then(() => {
       switch (direction) {
@@ -303,7 +309,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
     });
   }
   async PaginatedClosedTickets(direction: string, page: number) {
-    this.tech = '';
+    this.tech = 0;
     this.isFiltered = false;
 
     this.presentLoader().then(() => {
@@ -432,7 +438,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
     switch (this.type) {
       case 'open':
         if (this.isFiltered) {
-          this.tech = '';
+          this.tech = 0;
           this.paginatedTickets('root', 1);
           this.isFiltered = false;
         } else {
@@ -446,7 +452,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
 
       default:
         if (this.isFiltered) {
-          this.tech = '';
+          this.tech = 0;
           this.isFiltered = false;
           this.PaginatedClosedTickets('root', 1);
         } else {
@@ -538,7 +544,7 @@ export class ManageTicketsPage implements OnInit, OnDestroy {
       alternative_number: '',
       last_updated: '',
       organization_id: 0,
-      technician: '',
+      technician: 0,
     };
     this.assigned = false;
     this.isResolved = false;

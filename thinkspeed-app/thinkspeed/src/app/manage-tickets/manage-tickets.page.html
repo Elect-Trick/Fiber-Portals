@@ -60,8 +60,8 @@
                               >
                                 <ion-select-option
                                   *ngFor="let tech of technicians"
-                                  [value]="tech.account_name"
-                                  >{{tech.account_name}}</ion-select-option
+                                  [value]="tech.tech_name"
+                                  >{{tech.tech_name}}</ion-select-option
                                 >
                               </ion-select>
                             </ion-item>
@@ -156,7 +156,7 @@
                               <ion-col size="2.5">
                                 <ion-item lines="none">
                                   <ion-label
-                                    >{{ticket.technician ||
+                                    >{{findTech(ticket.technician) ||
                                     '--Unassigned--'}}</ion-label
                                   >
                                 </ion-item></ion-col
@@ -198,8 +198,8 @@
                               >
                                 <ion-select-option
                                   *ngFor="let tech of technicians"
-                                  [value]="tech.account_name"
-                                  >{{tech.account_name}}</ion-select-option
+                                  [value]="tech.technician_id"
+                                  >{{tech.tech_name}}</ion-select-option
                                 >
                               </ion-select>
                             </ion-item>
@@ -294,7 +294,7 @@
                               <ion-col size="2.5">
                                 <ion-item lines="none">
                                   <ion-label
-                                    >{{ticket.technician ||
+                                    >{{findTech(ticket.technician) ||
                                     '--Unassigned--'}}</ion-label
                                   >
                                 </ion-item></ion-col
@@ -355,7 +355,7 @@
             <ion-col size="3">
               <ion-item
                 color="warning"
-                [hidden]="selectedTicket.technician !==''"
+                [hidden]="selectedTicket.technician >0"
               >
                 <ion-label>Technician</ion-label>
                 <ion-select
@@ -364,8 +364,8 @@
                 >
                   <ion-select-option
                     *ngFor="let tech of technicians"
-                    [value]="tech.account_name"
-                    >{{tech.account_name}}</ion-select-option
+                    [value]="tech.technician_id"
+                    >{{tech.tech_name}}</ion-select-option
                   >
                 </ion-select>
               </ion-item>
@@ -491,7 +491,7 @@
 
                                 <ion-item>
                                   <ion-label
-                                    >{{selectedTicket.technician}}</ion-label
+                                    >{{findTech(selectedTicket.technician)}}</ion-label
                                   >
                                 </ion-item>
                               </ion-col>

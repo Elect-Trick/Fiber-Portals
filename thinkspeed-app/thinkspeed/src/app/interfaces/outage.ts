@@ -10,4 +10,5 @@ export interface Outage {
   incident_report:string;
   affected_areas: string[];
   last_updated:Date;
+  description:string;
 }

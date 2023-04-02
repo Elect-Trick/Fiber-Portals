@@ -1,12 +1,12 @@
 <?php
-include './headers.php';
-include './jwt.php';
-include './complex.php';
-include './mdu.php';
-include './sdu.php';
-include './single-unit.php';
-include './location.php';
-include './location-entity.php';
+include 'localhost/apis/clearaccess/headers.php';
+include 'localhost/apis/clearaccess/jwt.php';
+include 'localhost/apis/clearaccess/complex.php';
+include 'localhost/apis/clearaccess/mdu.php';
+include 'localhost/apis/clearaccess/sdu.php';
+include 'localhost/apis/clearaccess/single-unit.php';
+include 'localhost/apis/clearaccess/location.php';
+include 'localhost/apis/clearaccess/location-entity.php';
 
 if (isset($_REQUEST['paginated-mdus'])) {
     $items_per_page = 2;
@@ -117,7 +117,7 @@ if (isset($_REQUEST['fetch-all-sdus'])) {
         $result = mysqli_query($connection, $query);
         $sdus = array();
         if (!$result) {
-            // Nothing found 
+            // Nothing found
             http_response_code(400);
             exit();
         } else {
@@ -144,7 +144,7 @@ if (isset($_REQUEST['fetch-all-mdus'])) {
         $result = mysqli_query($connection, $query);
         $mdus = array();
         if (!$result) {
-            // Nothing found 
+            // Nothing found
             http_response_code(400);
             exit();
         } else {
@@ -215,7 +215,7 @@ if (isset($_REQUEST['find-location'])) {
         switch ($location_type) {
             case 'sdu':
                 # code...
-                // 
+                //
                 $query = "SELECT DISTINCT sdu_surburb,sdu_street_name from sdu_locations  where sdu_street_name like '%$search_string%' ";
                 $result = mysqli_query($connection, $query);
                 if ($result) {

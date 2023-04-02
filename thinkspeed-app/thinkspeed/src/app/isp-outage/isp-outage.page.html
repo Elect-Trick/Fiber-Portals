@@ -163,6 +163,16 @@
                                   </ion-card-header>
                                   <ion-card-content>
                                     <h2>{{outage.affected_areas}}</h2>
+                                    <br />
+                                    <ion-row>
+                                      <ion-card-title>Report</ion-card-title>
+
+                                      <ion-col size="12">
+                                        <ion-item>
+                                          {{outage.description}}
+                                        </ion-item>
+                                      </ion-col>
+                                    </ion-row>
                                   </ion-card-content>
                                 </ion-card>
                               </ion-col>

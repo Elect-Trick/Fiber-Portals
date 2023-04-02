@@ -100,14 +100,14 @@ export class AddUserPage
   async presentOutcomeToast(position: 'top', _message: string) {
     const toast = await this.toast.create({
       message: _message,
-      duration: 2000,
+      // duration: 2000,
       position: position,
     });
     return await toast.present();
   }
 
   register() {
-    if (this.userDetails.valid) {
+    if (!this.userDetails.valid) {
       this.presentLoader();
       this.registrationSub = this.usersService
         .registerUser(this.userDetails.value)

@@ -39,7 +39,7 @@ const routes: Routes = [
   },
   {
     path: 'add-user',
-    canActivate: [LoginGuard],
+    // canActivate: [LoginGuard],
     loadChildren: () =>
       import('./add-user/add-user.module').then((m) => m.AddUserPageModule),
   },

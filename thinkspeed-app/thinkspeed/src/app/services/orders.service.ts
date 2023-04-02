@@ -11,7 +11,7 @@ import { Location } from '../interfaces/location';
   providedIn: 'root',
 })
 export class OrdersService {
-  baseURL = 'https://localhost/xampp/orders.php';
+  baseURL = 'https://localhost/apis/clearaccess/orders.php';
 
   constructor(private http: HttpClient) {}
 

@@ -55,6 +55,7 @@ export class IspOutagePage implements OnInit {
     incident_report: '',
     affected_areas: [],
     last_updated: new Date(),
+    description: '',
   };
   closeSub!: Subscription;
   incidentUpdateSub!: Subscription;
@@ -184,6 +185,7 @@ export class IspOutagePage implements OnInit {
       incident_report: '',
       affected_areas: [],
       last_updated: new Date(),
+      description: '',
     };
     this.comments = [];
     this.outages = [];
@@ -233,7 +235,6 @@ export class IspOutagePage implements OnInit {
             this.markAsResolved(this.selectedOutage).then(() => {
               this.paginatedOutages('root', 1);
             });
-
           },
           role: 'Ok',
         },
@@ -382,6 +383,7 @@ export class IspOutagePage implements OnInit {
       incident_report: '',
       affected_areas: [],
       last_updated: new Date(),
+      description: '',
     };
     this.paginatedOutages('root', 1);
     this.searchString = '';

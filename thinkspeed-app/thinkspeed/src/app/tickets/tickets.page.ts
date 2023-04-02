@@ -65,7 +65,7 @@ export class TicketsPage implements OnInit, OnDestroy {
     alternative_number: '',
     last_updated: '',
     organization_id: 0,
-    technician: '',
+    technician: 0,
   };
   isDisputable = false;
   isDisputed = false;
@@ -220,7 +220,7 @@ export class TicketsPage implements OnInit, OnDestroy {
           alternative_number: '',
           last_updated: '',
           organization_id: 0,
-          technician: '',
+          technician: 0,
         };
         this.loadingCtrl.dismiss();
       });
@@ -291,7 +291,7 @@ export class TicketsPage implements OnInit, OnDestroy {
       alternative_number: '',
       last_updated: '',
       organization_id: 0,
-      technician: '',
+      technician: 0,
     };
   }
   logDispute() {
@@ -363,7 +363,7 @@ export class TicketsPage implements OnInit, OnDestroy {
       alternative_number: '',
       last_updated: '',
       organization_id: 0,
-      technician: '',
+      technician: 0,
     };
     this.selectedLocation = { location_id: 0, location_string: '' };
     this.searchObject = { type: 'sdu', searchString: '' };
